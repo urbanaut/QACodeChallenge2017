@@ -17,8 +17,8 @@ import java.util.*;
 
 public class Helpers {
 
-    public WebDriver driver;
-    public boolean mobileTest;
+    private WebDriver driver;
+    private boolean mobileTest;
     
     public Helpers(WebDriver driver, boolean mobileTest) {
         this.driver = driver;

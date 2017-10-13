@@ -35,6 +35,9 @@ public class CodeChallenge extends TestBase {
         inputData.put("pores", data.get(17).toString());
         inputData.put("firmness", data.get(18).toString());
         inputData.put("radiance", data.get(19).toString());
+        inputData.put("texture", data.get(20).toString());
+        inputData.put("dayFragrance", h.capitalize(data.get(21).toString()));
+        inputData.put("nightFragrance", h.capitalize(data.get(23).toString()));
 
 
 
@@ -56,6 +59,11 @@ public class CodeChallenge extends TestBase {
         ap.slideDial(inputData.get("pores"));
         ap.selectSkinFirmness(inputData.get("firmness"));
         ap.selectSkinRadiance(inputData.get("radiance"));
+        ap.selectSkinTexture(inputData.get("texture"));
+        ap.continueAssessment();
+        ap.selectAddFragrance(inputData.get("dayFragrance"));
+        ap.slideDayMoisturizerDial("60");
+        ap.selectAddFragrance(inputData.get("nightFragrance"));
 
     }
 }

@@ -1,6 +1,5 @@
 package pages;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,24 +27,18 @@ public class AssessmentPage {
     // Navigation Buttons
     @FindBy(xpath = "//*[@id=\"nuskinBespokeApp\"]//button[@translate='back-btn-text']")
     public WebElement previousBtn;
-
     @FindBy(xpath = "//*[@id=\"nuskinBespokeApp\"]//button[@translate='next-btn-text']")
     public WebElement nextBtn;
-
     @FindBy(xpath = "//button[@translate='continue-btn-text']")
     public WebElement continueBtn;
-
 
     // Agreement
     @FindBy(xpath = "//*[@id=\"page-wrap-you\"]/div[3]/div/div/div[2]/p/label")
     public WebElement agreementBtn;
-
     @FindBy(xpath = "//*[@id=\"page-wrap-you\"]/div[3]/div/div/div[2]/button")
     public WebElement agreementContinueBtn;
-
     @FindBy(xpath = "//div[@id='header']//a[@id='agreeToCookies']")
     public WebElement cookieBtn;
-
 
     // Personal Info
     @FindBy(xpath = "//*[@id=\"name-text\"]")
@@ -58,7 +51,6 @@ public class AssessmentPage {
     // Ethnicity
     @FindBy(xpath = "//*[@id=\"ethnicity-window\"]/ul/li")
     public List<WebElement> ethnicities;
-
 
     // Location
     @FindBy(xpath = "//*[@id=\"locationText\"]")
@@ -95,19 +87,9 @@ public class AssessmentPage {
     @FindBy(xpath = "//div[@id='skin-texture-window']/button")
     public List<WebElement> textures;
 
-    @FindBy(xpath = "//button[@translate='skin-texture-smooth']")
-    public WebElement smoothBtn;
-    @FindBy(xpath = "//button[@translate='skin-texture-someSmooth']")
-    public WebElement somewhatSmoothBtn;
-    @FindBy(xpath = "//button[@translate='skin-texture-someRough']")
-    public WebElement somewhatRoughBtn;
-    @FindBy(xpath = "//button[@translate='skin-texture-rough']")
-    public WebElement roughBtn;
-
-
     // Day Moisturizer
-    @FindBy(xpath = "//button[@translate='yes-btn-text']")
-    public WebElement yesMoisturizerBtn;
+    @FindBy(xpath = "//div[@id='preferences-fragrance-window']/button")
+    public List<WebElement> fragranceChoices;
 
     @FindBy(xpath = "//button[@translate='no-btn-text']")
     public WebElement noMoisturizerBtn;
@@ -209,42 +191,19 @@ public class AssessmentPage {
     }
 
     public void selectSkinTexture(String texture) throws Exception {
-        h.waitForElementToBeReady(smoothBtn);
-        switch (texture) {
-            case "smooth":
-                smoothBtn.click();
-                break;
-            case "somewhatSmooth":
-                somewhatSmoothBtn.click();
-                break;
-            case "somewhatRough":
-                somewhatRoughBtn.click();
-                break;
-            case "rough":
-                roughBtn.click();
-                break;
-            default:
-                smoothBtn.click();
-                break;
-        }
+        h.waitForElementToBeReady(textures.get(0));
+        texture = h.compareStringToAttribute(texture, textures);
+        h.getElementByAttribute(textures, texture).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
-    public void selectAddChoice(String choice) throws Exception {
-        h.waitForElementToBeReady(yesMoisturizerBtn);
-        switch (choice) {
-            case "yes":
-                yesMoisturizerBtn.click();
-                break;
-            case "no":
-                noMoisturizerBtn.click();
-                break;
-            default:
-                yesMoisturizerBtn.click();
-                break;
-        }
+    public void selectAddFragrance(String choice) throws Exception {
+        h.waitForElementToBeReady(fragranceChoices.get(0));
+        h.getElementByInnerHtml(fragranceChoices, choice).click();
         h.scrollToAndClickElement(nextBtn, 75);
     }
+
+
 
     private void selectContinueModalOption(String choice) {
         if (sunProtectionContinueBtn.isDisplayed()) {
