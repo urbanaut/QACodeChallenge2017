@@ -57,8 +57,6 @@ public class AssessmentPage {
     // Location
     @FindBy(xpath = "//*[@id='locationText']")
     public WebElement locationTxb;
-    @FindBy(xpath = "//div/h2[@ng-bind-html='subtitleText()']")
-    public WebElement autoFindTxt;
     @FindBy(xpath = "//*[@id='map']")
     public WebElement map;
     @FindBy(xpath = "//div[@class='input-wrap top-spacer']//i[@class='clear-input']")
@@ -147,9 +145,7 @@ public class AssessmentPage {
     public void enterLocation(String location) throws Exception {
         Actions actions = new Actions(driver);
         h.waitForElementToBeReady(map);
-        Thread.sleep(1000);
-        if (autoFindTxt.isDisplayed())
-            clearLocationBtn.click();
+        clearLocationBtn.click();
         locationTxb.sendKeys(location);
         Thread.sleep(1000);
         actions.sendKeys(Keys.DOWN, Keys.ENTER).perform();
