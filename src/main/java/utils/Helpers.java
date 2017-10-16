@@ -82,6 +82,7 @@ public class Helpers {
         return sheetData;
     }
 
+    //TODO Fix this method to handle foreign text
     public WebElement getElementByInnerHtml(List<WebElement> elements, String option) {
         Map<String, WebElement> buttons = new HashMap<>();
         for (WebElement element : elements) {

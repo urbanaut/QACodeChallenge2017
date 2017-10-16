@@ -1,5 +1,7 @@
 package pages;
 
+import com.sun.jna.platform.FileUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -8,6 +10,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import utils.Helpers;
 
+import java.io.FileOutputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +28,8 @@ public class AssessmentPage {
     }
 
     // Navigation Buttons
-    @FindBy(xpath = "//a[text()='TAKE ASSESSMENT']")
+//    @FindBy(xpath = "//a[text()='TAKE ASSESSMENT']")
+    @FindBy(xpath = "//a[contains(@href,'you-start')]")
     public WebElement takeAssessmentLnk;
     @FindBy(xpath = "//button[@translate='continue-btn-text']")
     public WebElement continueBtn;
@@ -97,6 +101,8 @@ public class AssessmentPage {
     public List<WebElement> modalOptions;
 
     // Review
+    @FindBy(xpath = "//div[@class='page-content']")
+    public WebElement assessmentSummaryTxt;
     @FindBy(xpath = "//button[@translate='review-find-my-regimen']")
     public WebElement findCustomizedRegimenBtn;
     @FindBy(xpath = "//div[@class='final-bottom']/p[@ng-class='extraCodeClass']")
@@ -131,10 +137,7 @@ public class AssessmentPage {
     public void enterPersonalInfo(String name, String age, String sex) {
         nameTbx.sendKeys(name);
         ageTbx.sendKeys(age);
-        Map<String, WebElement> buttons = new HashMap<>();
-        for (WebElement element : sexes)
-            buttons.put(element.getAttribute("innerHTML"),element);
-        buttons.get(sex).click();
+        h.getElementByInnerHtml(sexes, sex).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
@@ -194,13 +197,16 @@ public class AssessmentPage {
         h.scrollToAndClickElement(nextBtn, 75);
     }
 
-    public void findCustomizedRegimen() throws Exception {
+    public void getCustomizedRegimen() throws Exception {
+        FileOutputStream fos = new FileOutputStream("src/main/java/output/summary.txt");
         h.waitForElementToBeReady(findCustomizedRegimenBtn);
+        fos.write((assessmentSummaryTxt.getText()+"\n").getBytes());
         findCustomizedRegimenBtn.click();
         do {
             Thread.sleep(500);
         } while (assessmentCodeTxt.getText().equals(""));
-        System.out.println("Unique Assessment Code: '" + assessmentCodeTxt.getText() + "'");
+        fos.write(("Assessment Code: " + assessmentCodeTxt.getText()).getBytes());
+        fos.close();
     }
 
     public void slideDial(String percent) throws Exception {
