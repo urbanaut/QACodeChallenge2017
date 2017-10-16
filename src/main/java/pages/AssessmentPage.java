@@ -27,41 +27,41 @@ public class AssessmentPage {
     // Navigation Buttons
     @FindBy(xpath = "//a[text()='TAKE ASSESSMENT']")
     public WebElement takeAssessmentLnk;
-    @FindBy(xpath = "//*[@id=\"nuskinBespokeApp\"]//button[@translate='back-btn-text']")
+    @FindBy(xpath = "//*[@id='nuskinBespokeApp']//button[@translate='back-btn-text']")
     public WebElement previousBtn;
-    @FindBy(xpath = "//*[@id=\"nuskinBespokeApp\"]//button[@translate='next-btn-text']")
+    @FindBy(xpath = "//*[@id='nuskinBespokeApp']//button[@translate='next-btn-text']")
     public WebElement nextBtn;
     @FindBy(xpath = "//button[@translate='continue-btn-text']")
     public WebElement continueBtn;
 
     // Agreement
-    @FindBy(xpath = "//*[@id=\"page-wrap-you\"]/div[3]/div/div/div[2]/p/label")
+    @FindBy(xpath = "//*[@id='page-wrap-you']//label")
     public WebElement agreementBtn;
-    @FindBy(xpath = "//*[@id=\"page-wrap-you\"]/div[3]/div/div/div[2]/button")
+    @FindBy(xpath = "//*[@id='page-wrap-you']/div[3]//button")
     public WebElement agreementContinueBtn;
     @FindBy(xpath = "//div[@id='header']//a[@id='agreeToCookies']")
     public WebElement cookieBtn;
 
     // Personal Info
-    @FindBy(xpath = "//*[@id=\"name-text\"]")
+    @FindBy(xpath = "//*[@id='name-text']")
     public WebElement nameTbx;
-    @FindBy(xpath = "//*[@id=\"age-text\"]")
+    @FindBy(xpath = "//*[@id='age-text']")
     public WebElement ageTbx;
-    @FindBy(xpath = "//*[@id=\"nuskinBespokeApp\"]/div/div[3]/div/div[2]/div/button")
+    @FindBy(xpath = "//*[@id='nuskinBespokeApp']//button[@class='bespokeButton ng-scope']")
     public List<WebElement> sexes;
 
     // Ethnicity
-    @FindBy(xpath = "//*[@id=\"ethnicity-window\"]/ul/li")
+    @FindBy(xpath = "//*[@id='ethnicity-window']/ul/li")
     public List<WebElement> ethnicities;
 
     // Location
-    @FindBy(xpath = "//*[@id=\"locationText\"]")
+    @FindBy(xpath = "//*[@id='locationText']")
     public WebElement locationTxb;
     @FindBy(xpath = "//div/h2[@ng-bind-html='subtitleText()']")
     public WebElement autoFindTxt;
-    @FindBy(xpath = "//*[@id=\"map\"]")
+    @FindBy(xpath = "//*[@id='map']")
     public WebElement map;
-    @FindBy(xpath = "//*[@id=\"nuskinBespokeApp\"]/div/div[3]/div/div[2]/div/div[1]/div/i")
+    @FindBy(xpath = "//div[@class='input-wrap top-spacer']//i[@class='clear-input']")
     public WebElement clearLocationBtn;
 
     // Dial Pages
