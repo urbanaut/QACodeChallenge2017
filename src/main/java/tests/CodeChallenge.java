@@ -20,6 +20,8 @@ public class CodeChallenge extends TestBase {
         List data = excelData.get("Sheet1").get(1);
         Map<String, String> inputData = new HashMap<>();
 
+        inputData.put("name", data.get(1).toString());
+        inputData.put("age", data.get(4).toString());
         inputData.put("sex", h.capitalize(data.get(5).toString()));
         inputData.put("ethnicity", h.chop(data.get(6).toString()));
         inputData.put("location", h.capitalize(data.get(7).toString()) + ", " + data.get(3));
@@ -37,13 +39,14 @@ public class CodeChallenge extends TestBase {
         inputData.put("radiance", data.get(19).toString());
         inputData.put("texture", data.get(20).toString());
         inputData.put("dayFragrance", h.capitalize(data.get(21).toString()));
+        inputData.put("dayMoisturizer", data.get(22).toString());
         inputData.put("nightFragrance", h.capitalize(data.get(23).toString()));
-
+        inputData.put("nightMoisturizer", data.get(24).toString());
 
 
         ap.acceptAgreement();
         ap.continueAssessment();
-        ap.enterPersonalInfo("Bill", "40", inputData.get("sex"));
+        ap.enterPersonalInfo(inputData.get("name"), inputData.get("age"), inputData.get("sex"));
         ap.selectEthnicity(inputData.get("ethnicity"));
         ap.enterLocation(inputData.get("location"));
         ap.slideDial(inputData.get("pollution"));
@@ -62,8 +65,10 @@ public class CodeChallenge extends TestBase {
         ap.selectSkinTexture(inputData.get("texture"));
         ap.continueAssessment();
         ap.selectAddFragrance(inputData.get("dayFragrance"));
-        ap.slideDayMoisturizerDial("60");
+        ap.slideDial(inputData.get("dayMoisturizer"));
         ap.selectAddFragrance(inputData.get("nightFragrance"));
+        ap.slideDial(inputData.get("nightMoisturizer"));
+        ap.findCustomizedRegimen();
 
     }
 }

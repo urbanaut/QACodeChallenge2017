@@ -1,5 +1,6 @@
 package pages;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -65,6 +66,8 @@ public class AssessmentPage {
     // Dial Pages
     @FindBy(xpath = "//canvas")
     public WebElement sliderCtrl;
+    @FindBy(xpath = "//h1[contains(@class,'ng-scope')]")
+    public WebElement sliderPageHeading;
 
     // Skin Type
     @FindBy(xpath = "//div[@id='skin-type-window']/button")
@@ -82,7 +85,6 @@ public class AssessmentPage {
     @FindBy(xpath = "//div[@id='skin-radiance-window']/button")
     public List<WebElement> radianceTypes;
 
-
     // Texture
     @FindBy(xpath = "//div[@id='skin-texture-window']/button")
     public List<WebElement> textures;
@@ -91,8 +93,12 @@ public class AssessmentPage {
     @FindBy(xpath = "//div[@id='preferences-fragrance-window']/button")
     public List<WebElement> fragranceChoices;
 
-    @FindBy(xpath = "//button[@translate='no-btn-text']")
-    public WebElement noMoisturizerBtn;
+
+
+    // Modal Alert Options
+    @FindBy(xpath = "//div[@class='alert-options']/button")
+    public List<WebElement> modalOptions;
+
 
 
     // Sun Protection Modal
@@ -203,40 +209,6 @@ public class AssessmentPage {
         h.scrollToAndClickElement(nextBtn, 75);
     }
 
-
-
-    private void selectContinueModalOption(String choice) {
-        if (sunProtectionContinueBtn.isDisplayed()) {
-            switch (choice) {
-                case "continue":
-                    sunProtectionContinueBtn.click();
-                    break;
-                case "change":
-                    sunProtectionChangeBtn.click();
-                    break;
-                default:
-                    sunProtectionContinueBtn.click();
-                    break;
-            }
-        }
-    }
-
-    private void selectYesNoModalOption(String choice) {
-        if (yesModalBtn.isDisplayed()) {
-            switch (choice) {
-                case "no":
-                    noModalBtn.click();
-                    break;
-                case "yes":
-                    yesModalBtn.click();
-                    break;
-                default:
-                    yesModalBtn.click();
-                    break;
-            }
-        }
-    }
-
     public void findCustomizedRegimen() throws Exception {
         h.waitForElementToBeReady(findCustomizedRegimenBtn);
         findCustomizedRegimenBtn.click();
@@ -248,13 +220,32 @@ public class AssessmentPage {
         Actions actions = new Actions(driver);
         h.waitForElementToBeReady(sliderCtrl);
 
+        if (percent.equals(""))
+            percent = "25";
         int pc = Integer.valueOf(percent);
+        double percentage = pc / 100.0;
         int width = sliderCtrl.getSize().getWidth();
         int height = sliderCtrl.getSize().getHeight();
-        double xOffset = 0.20 * width;      // Set xOffset at 20% of the width of the canvas image
         double yOffset = 0.80 * (height);   // Set yOffset at 80% of the height of the canvas image
-        double percentage = pc / 100.0;
-        double distance = percentage * (width - (2 * xOffset));
+        double xOffset;
+        double distance;
+
+        if (sliderPageHeading.getText().equals("Day Moisturizer")) {
+            xOffset = 0.50 * width;      // Set xOffset at 50% of the width of the canvas image
+            distance = percentage * ((width / 2) - (width * 0.2));
+        } else if (sliderPageHeading.getText().equals("Night Moisturizer")) {
+            // Knob starts at 60% of canvas, distance must be between that
+            // and the end of the dial, which is 20% from the edge of the canvas,
+            // which distance is canvas length minus 80% of the total length
+            xOffset = 0.60 * width;      // Set xOffset at 50% of the width of the canvas image
+            if (pc > 0)
+                distance = percentage * (width - (width * 0.80));
+            else
+                distance = percentage * ((width / 2)  - (width * 0.10));
+        } else {
+            xOffset = 0.20 * width;      // Set xOffset at 20% of the width of the canvas image
+            distance = percentage * (width - (2 * xOffset));
+        }
 
         //System.out.println("Width: " + width + ", Height: " + height + ", xOff: " + xOffset + ", yOff: " + yOffset + ", Distance: " + distance);
 
@@ -269,12 +260,27 @@ public class AssessmentPage {
             actions.moveToElement(sliderCtrl, (int) xOffset, (int) yOffset).click().perform();
         }
         h.scrollToAndClickElement(nextBtn, 50);
+
+        try {
+            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+            if (modalOptions.get(0).isDisplayed())
+                if (modalOptions.get(0).getText().equals("No"))
+                    modalOptions.get(1).click();
+                else
+                    modalOptions.get(0).click();
+            else
+                System.out.println("Modal options not found.");
+        } catch (Exception e) {
+            System.out.println("No modal alert, proceeding to next section.");
+        }
     }
 
     public void slideDayMoisturizerDial(String percent) throws Exception {
         Actions actions = new Actions(driver);
         h.waitForElementToBeReady(sliderCtrl);
 
+        if (percent.equals(""))
+            percent = "25";
         int pc = Integer.valueOf(percent);
         int width = sliderCtrl.getSize().getWidth();
         int height = sliderCtrl.getSize().getHeight();
@@ -298,18 +304,14 @@ public class AssessmentPage {
 
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            if (sunProtectionContinueBtn.isDisplayed())
-                selectContinueModalOption("continue");
-
-        }catch (Exception e) {
-            System.out.println("No modal alert, proceeding to next section.");
-        }
-
-        try {
-            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            if (yesModalBtn.isDisplayed())
-                selectYesNoModalOption("yes");
-        }catch (Exception e) {
+            if (modalOptions.get(0).isDisplayed())
+                if (modalOptions.get(0).getText().equals("No"))
+                    modalOptions.get(1).click();
+                else
+                    modalOptions.get(0).click();
+            else
+                System.out.println("Modal options not found.");
+        } catch (Exception e) {
             System.out.println("No modal alert, proceeding to next section.");
         }
     }
@@ -318,6 +320,8 @@ public class AssessmentPage {
         Actions actions = new Actions(driver);
         h.waitForElementToBeReady(sliderCtrl);
 
+        if (percent.equals(""))
+            percent = "25";
         int pc = Integer.valueOf(percent);
         int width = sliderCtrl.getSize().getWidth();
         int height = sliderCtrl.getSize().getHeight();
@@ -350,10 +354,14 @@ public class AssessmentPage {
 
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            if (yesModalBtn.isDisplayed()) {
-                selectYesNoModalOption("yes");
-            }
-        }catch (Exception e) {
+            if (modalOptions.get(0).isDisplayed())
+                if (modalOptions.get(0).getText().equals("No"))
+                    modalOptions.get(1).click();
+                else
+                    modalOptions.get(0).click();
+            else
+                System.out.println("Modal options not found.");
+        } catch (Exception e) {
             System.out.println("No modal alert, proceeding to next section.");
         }
     }
