@@ -27,37 +27,37 @@ public class AssessmentPage {
     // Navigation Buttons
     @FindBy(xpath = "//a[text()='TAKE ASSESSMENT']")
     public WebElement takeAssessmentLnk;
-    @FindBy(xpath = "//*[@id='nuskinBespokeApp']//button[@translate='back-btn-text']")
-    public WebElement previousBtn;
-    @FindBy(xpath = "//*[@id='nuskinBespokeApp']//button[@translate='next-btn-text']")
-    public WebElement nextBtn;
     @FindBy(xpath = "//button[@translate='continue-btn-text']")
     public WebElement continueBtn;
+    @FindBy(xpath = "//div[@id='nuskinBespokeApp']//button[@translate='back-btn-text']")
+    public WebElement previousBtn;
+    @FindBy(xpath = "//div[@id='nuskinBespokeApp']//button[@translate='next-btn-text']")
+    public WebElement nextBtn;
 
     // Agreement
-    @FindBy(xpath = "//*[@id='page-wrap-you']//label")
+    @FindBy(xpath = "//div[@id='page-wrap-you']//label")
     public WebElement agreementBtn;
-    @FindBy(xpath = "//*[@id='page-wrap-you']/div[3]//button")
+    @FindBy(xpath = "//div[@id='page-wrap-you']/div[3]//button")
     public WebElement agreementContinueBtn;
     @FindBy(xpath = "//div[@id='header']//a[@id='agreeToCookies']")
     public WebElement cookieBtn;
 
     // Personal Info
-    @FindBy(xpath = "//*[@id='name-text']")
+    @FindBy(xpath = "//input[@id='name-text']")
     public WebElement nameTbx;
-    @FindBy(xpath = "//*[@id='age-text']")
+    @FindBy(xpath = "//input[@id='age-text']")
     public WebElement ageTbx;
-    @FindBy(xpath = "//*[@id='nuskinBespokeApp']//button[@class='bespokeButton ng-scope']")
+    @FindBy(xpath = "//div[@id='nuskinBespokeApp']//button[@class='bespokeButton ng-scope']")
     public List<WebElement> sexes;
 
     // Ethnicity
-    @FindBy(xpath = "//*[@id='ethnicity-window']/ul/li")
+    @FindBy(xpath = "//div[@id='ethnicity-window']/ul/li")
     public List<WebElement> ethnicities;
 
     // Location
-    @FindBy(xpath = "//*[@id='locationText']")
+    @FindBy(xpath = "//input[@id='locationText']")
     public WebElement locationTxb;
-    @FindBy(xpath = "//*[@id='map']")
+    @FindBy(xpath = "//div[@id='map']")
     public WebElement map;
     @FindBy(xpath = "//div[@class='input-wrap top-spacer']//i[@class='clear-input']")
     public WebElement clearLocationBtn;
@@ -99,6 +99,8 @@ public class AssessmentPage {
     // Review
     @FindBy(xpath = "//button[@translate='review-find-my-regimen']")
     public WebElement findCustomizedRegimenBtn;
+    @FindBy(xpath = "//div[@class='final-bottom']/p[@ng-class='extraCodeClass']")
+    public WebElement assessmentCodeTxt;
 
 
     public void navigateToCountryUrl(String url) {
@@ -195,6 +197,10 @@ public class AssessmentPage {
     public void findCustomizedRegimen() throws Exception {
         h.waitForElementToBeReady(findCustomizedRegimenBtn);
         findCustomizedRegimenBtn.click();
+        do {
+            Thread.sleep(500);
+        } while (assessmentCodeTxt.getText().equals(""));
+        System.out.println("Unique Assessment Code: '" + assessmentCodeTxt.getText() + "'");
     }
 
     public void slideDial(String percent) throws Exception {
@@ -250,8 +256,6 @@ public class AssessmentPage {
                     modalOptions.get(1).click();
                 else
                     modalOptions.get(0).click();
-            else
-                System.out.println("Modal options not found.");
         } catch (Exception e) {
             System.out.println("No modal alert, proceeding to next section.");
         }
