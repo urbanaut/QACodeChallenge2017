@@ -47,15 +47,13 @@ public class Helpers {
         }
     }
 
-    public HashMap loadExcelLines() {
-        HashMap<String, LinkedHashMap<Integer, List>> outerMap = new LinkedHashMap<>();
+    public HashMap loadExcelFile() {
+        HashMap<String, LinkedHashMap<Integer, List>> sheetData = new LinkedHashMap<>();
         LinkedHashMap<Integer, List> hashMap = new LinkedHashMap<>();
         File file = new File("src/main/resources/data-provider/assessmentdata.xls");
         String sheetName;
-        FileInputStream fis = null;
 
-        try {
-            fis = new FileInputStream(file);
+        try(FileInputStream fis = new FileInputStream(file)) {
             HSSFWorkbook workBook = new HSSFWorkbook(fis);
 
             for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
@@ -75,22 +73,13 @@ public class Helpers {
                     }
                     hashMap.put(row.getRowNum(), data);
                 }
-                outerMap.put(sheetName, hashMap);
+                sheetData.put(sheetName, hashMap);
                 hashMap = new LinkedHashMap<>();
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        return outerMap;
+        return sheetData;
     }
 
     public WebElement getElementByInnerHtml(List<WebElement> elements, String option) {
