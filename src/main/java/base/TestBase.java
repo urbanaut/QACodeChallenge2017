@@ -13,13 +13,11 @@ import java.util.concurrent.TimeUnit;
 public class TestBase {
 
     protected static WebDriver driver;
-    private static String chromeDriverPath = "src\\main\\resources\\drivers\\chromedriver.exe";
-    public boolean mobileTest = false;
-    private String language = "English";
+    protected boolean mobileTest = false;
 
     @BeforeTest
     public void init() {
-        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+        System.setProperty("webdriver.chrome.driver", "src\\main\\resources\\drivers\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--no-sandbox");
 //        options.addArguments("--start-maximized");
@@ -33,6 +31,7 @@ public class TestBase {
 
         String deviceName = "Samsung Galaxy S4";
 //        String deviceName = "Apple iPad";
+
         Map<String, String> devices =  new HashMap<>();
         devices.put("deviceName", deviceName);
         Map<String, Object> mobileEmulation = new HashMap<>();
@@ -46,17 +45,5 @@ public class TestBase {
         else
             driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-
-        switch (language) {
-            case "English":
-                driver.navigate().to("https://www.nuskin.com/content/nuskin/en_US/ageloc-me-assessment.html#/you-start");
-                break;
-            case "French":
-                driver.navigate().to("https://www.nuskin.com/content/nuskin/fr_BE/ageloc-me-assessment.html#/you-start");
-                break;
-            case "Dutch":
-                driver.navigate().to("https://www.nuskin.com/content/nuskin/nl_BE/ageloc-me-assessment.html#/you-start");
-                break;
-        }
     }
 }

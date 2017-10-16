@@ -21,9 +21,10 @@ public class CodeChallenge extends TestBase {
         Map<String, String> inputData = new HashMap<>();
 
         inputData.put("name", data.get(1).toString());
+        inputData.put("countryURL", data.get(2).toString());
         inputData.put("age", data.get(4).toString());
         inputData.put("sex", h.capitalize(data.get(5).toString()));
-        inputData.put("ethnicity", h.chop(data.get(6).toString()));
+        inputData.put("ethnicity", data.get(6).toString());
         inputData.put("location", h.capitalize(data.get(7).toString()) + ", " + data.get(3));
         inputData.put("pollution", data.get(8).toString());
         inputData.put("environment", data.get(9).toString());
@@ -43,7 +44,8 @@ public class CodeChallenge extends TestBase {
         inputData.put("nightFragrance", h.capitalize(data.get(23).toString()));
         inputData.put("nightMoisturizer", data.get(24).toString());
 
-
+        // Execute Assessment Test
+        ap.navigateToCountryUrl(inputData.get("countryURL"));
         ap.acceptAgreement();
         ap.continueAssessment();
         ap.enterPersonalInfo(inputData.get("name"), inputData.get("age"), inputData.get("sex"));
@@ -69,6 +71,5 @@ public class CodeChallenge extends TestBase {
         ap.selectAddFragrance(inputData.get("nightFragrance"));
         ap.slideDial(inputData.get("nightMoisturizer"));
         ap.findCustomizedRegimen();
-
     }
 }

@@ -96,12 +96,9 @@ public class Helpers {
         return outerMap;
     }
 
-
-
     public WebElement getElementByInnerHtml(List<WebElement> elements, String option) {
         Map<String, WebElement> buttons = new HashMap<>();
         for (WebElement element : elements) {
-            System.out.println(element.getAttribute("innerHTML"));
             buttons.put(element.getAttribute("innerHTML"), element);
         }
         return buttons.get(option);
@@ -110,7 +107,6 @@ public class Helpers {
     public WebElement getElementByAttribute(List<WebElement> elements, String option) {
         Map<String, WebElement> buttons = new HashMap<>();
         for (WebElement element : elements) {
-            System.out.println(element.getAttribute("innerHTML"));
             buttons.put(element.getAttribute("ng-class"), element);
         }
         return buttons.get(option);
@@ -140,12 +136,6 @@ public class Helpers {
         return StringUtils.capitalize(word);
     }
 
-    public String chop(String word) {
-        int i = word.indexOf(" ");
-        word = word.substring(0, i);
-        return word;
-    }
-
     public String splitCamelCase(String s) {
         return s.replaceAll(
                 String.format("%s|%s|%s",
@@ -153,5 +143,11 @@ public class Helpers {
                         "(?<=[^A-Z])(?=[A-Z])",
                         "(?<=[A-Za-z])(?=[^A-Za-z])")
                 , " ");
+    }
+
+    public String chop(String word) {
+        int i = word.indexOf(" ");
+        word = word.substring(0, i);
+        return word;
     }
 }

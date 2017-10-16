@@ -1,6 +1,5 @@
 package pages;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -26,6 +25,8 @@ public class AssessmentPage {
     }
 
     // Navigation Buttons
+    @FindBy(xpath = "//a[text()='TAKE ASSESSMENT']")
+    public WebElement takeAssessmentLnk;
     @FindBy(xpath = "//*[@id=\"nuskinBespokeApp\"]//button[@translate='back-btn-text']")
     public WebElement previousBtn;
     @FindBy(xpath = "//*[@id=\"nuskinBespokeApp\"]//button[@translate='next-btn-text']")
@@ -93,36 +94,22 @@ public class AssessmentPage {
     @FindBy(xpath = "//div[@id='preferences-fragrance-window']/button")
     public List<WebElement> fragranceChoices;
 
-
-
     // Modal Alert Options
     @FindBy(xpath = "//div[@class='alert-options']/button")
     public List<WebElement> modalOptions;
-
-
-
-    // Sun Protection Modal
-    @FindBy(xpath = "//button[contains(@class,'change')]")
-    public WebElement sunProtectionContinueBtn;
-
-    @FindBy(xpath = "//button[contains(@class,'confirm')]")
-    public WebElement sunProtectionChangeBtn;
-
-
-    // Lighter Moisturizer Modal
-    @FindBy(xpath = "//button[contains(@class,'change')]")
-    public WebElement noModalBtn;
-
-    @FindBy(xpath = "//button[contains(@class,'confirm')]")
-    public WebElement yesModalBtn;
-
 
     // Review
     @FindBy(xpath = "//button[@translate='review-find-my-regimen']")
     public WebElement findCustomizedRegimenBtn;
 
 
+    public void navigateToCountryUrl(String url) {
+        driver.navigate().to(url);
+        takeAssessmentLnk.click();
+    }
+
     public void acceptAgreement() throws Exception {
+        h.waitForElementToBeReady(agreementContinueBtn);
         if (mobileTest) {
             try {
                 driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
@@ -214,8 +201,6 @@ public class AssessmentPage {
         findCustomizedRegimenBtn.click();
     }
 
-
-
     public void slideDial(String percent) throws Exception {
         Actions actions = new Actions(driver);
         h.waitForElementToBeReady(sliderCtrl);
@@ -230,25 +215,25 @@ public class AssessmentPage {
         double xOffset;
         double distance;
 
+        // Determine Slider Type
         if (sliderPageHeading.getText().equals("Day Moisturizer")) {
-            xOffset = 0.50 * width;      // Set xOffset at 50% of the width of the canvas image
+            xOffset = 0.50 * width; // Set xOffset at 50% of the width of the canvas image
             distance = percentage * ((width / 2) - (width * 0.2));
         } else if (sliderPageHeading.getText().equals("Night Moisturizer")) {
             // Knob starts at 60% of canvas, distance must be between that
             // and the end of the dial, which is 20% from the edge of the canvas,
             // which distance is canvas length minus 80% of the total length
-            xOffset = 0.60 * width;      // Set xOffset at 50% of the width of the canvas image
+            xOffset = 0.60 * width; // Set xOffset at 50% of the width of the canvas image
             if (pc > 0)
                 distance = percentage * (width - (width * 0.80));
             else
                 distance = percentage * ((width / 2)  - (width * 0.10));
         } else {
-            xOffset = 0.20 * width;      // Set xOffset at 20% of the width of the canvas image
+            xOffset = 0.20 * width; // Set xOffset at 20% of the width of the canvas image
             distance = percentage * (width - (2 * xOffset));
         }
 
-        //System.out.println("Width: " + width + ", Height: " + height + ", xOff: " + xOffset + ", yOff: " + yOffset + ", Distance: " + distance);
-
+        // Handle Mobile Test
         if (!mobileTest) {
             actions.moveToElement(sliderCtrl, (int) xOffset, (int) yOffset)
                     .clickAndHold()
@@ -261,6 +246,7 @@ public class AssessmentPage {
         }
         h.scrollToAndClickElement(nextBtn, 50);
 
+        // Handle Modal Alerts
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             if (modalOptions.get(0).isDisplayed())
@@ -274,97 +260,5 @@ public class AssessmentPage {
             System.out.println("No modal alert, proceeding to next section.");
         }
     }
-
-    public void slideDayMoisturizerDial(String percent) throws Exception {
-        Actions actions = new Actions(driver);
-        h.waitForElementToBeReady(sliderCtrl);
-
-        if (percent.equals(""))
-            percent = "25";
-        int pc = Integer.valueOf(percent);
-        int width = sliderCtrl.getSize().getWidth();
-        int height = sliderCtrl.getSize().getHeight();
-        double xOffset = 0.50 * width;      // Set xOffset at 50% of the width of the canvas image
-        double yOffset = 0.80 * (height);   // Set yOffset at 80% of the height of the canvas image
-        double percentage = pc / 100.0;
-        double distance = percentage * ((width / 2) - (width * 0.2));
-
-        if (!mobileTest) {
-            actions.moveToElement(sliderCtrl, (int) xOffset, (int) yOffset)
-                    .clickAndHold()
-                    .moveByOffset((int) distance, 0)
-                    .release()
-                    .perform();
-        } else {
-            xOffset = xOffset + distance;
-            actions.moveToElement(sliderCtrl, (int) xOffset, (int) yOffset).click().perform();
-        }
-
-        h.scrollToAndClickElement(nextBtn, 50);
-
-        try {
-            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            if (modalOptions.get(0).isDisplayed())
-                if (modalOptions.get(0).getText().equals("No"))
-                    modalOptions.get(1).click();
-                else
-                    modalOptions.get(0).click();
-            else
-                System.out.println("Modal options not found.");
-        } catch (Exception e) {
-            System.out.println("No modal alert, proceeding to next section.");
-        }
-    }
-
-    public void slideNightMoisturizerDial(String percent) throws Exception {
-        Actions actions = new Actions(driver);
-        h.waitForElementToBeReady(sliderCtrl);
-
-        if (percent.equals(""))
-            percent = "25";
-        int pc = Integer.valueOf(percent);
-        int width = sliderCtrl.getSize().getWidth();
-        int height = sliderCtrl.getSize().getHeight();
-        double xOffset = 0.60 * width;      // Set xOffset at 50% of the width of the canvas image
-        double yOffset = 0.80 * (height);   // Set yOffset at 80% of the height of the canvas image
-        double percentage = pc / 100.0;
-        double distance;
-
-        // Knob starts at 60% of canvas, distance must be between that
-        // and the end of the dial, which is 20% from the edge of the canvas,
-        // which distance is canvas length minus 80% of the total length
-        if (pc > 0) {
-            distance = percentage * (width - (width * 0.80));
-        } else {
-            distance = percentage * ((width / 2)  - (width * 0.10));
-        }
-
-        if (!mobileTest) {
-            actions.moveToElement(sliderCtrl, (int) xOffset, (int) yOffset)
-                    .clickAndHold()
-                    .moveByOffset((int) distance, 0)
-                    .release()
-                    .perform();
-        } else {
-            xOffset = xOffset + distance;
-            actions.moveToElement(sliderCtrl, (int) xOffset, (int) yOffset).click().perform();
-        }
-
-        h.scrollToAndClickElement(nextBtn, 50);
-
-        try {
-            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            if (modalOptions.get(0).isDisplayed())
-                if (modalOptions.get(0).getText().equals("No"))
-                    modalOptions.get(1).click();
-                else
-                    modalOptions.get(0).click();
-            else
-                System.out.println("Modal options not found.");
-        } catch (Exception e) {
-            System.out.println("No modal alert, proceeding to next section.");
-        }
-    }
-
 
 }
