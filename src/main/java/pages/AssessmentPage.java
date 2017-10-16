@@ -260,5 +260,4 @@ public class AssessmentPage {
             System.out.println("No modal alert, proceeding to next section.");
         }
     }
-
 }

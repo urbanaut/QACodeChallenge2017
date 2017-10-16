@@ -113,9 +113,8 @@ public class Helpers {
     }
 
     public String compareStringToInnerHtml(String option, List<WebElement> elements) {
-        String s = "";
         for (WebElement element : elements) {
-            s = element.getAttribute("innerHTML");
+            String s = element.getAttribute("innerHTML");
             if (s.toLowerCase().contains(option.toLowerCase()))
                 return s;
         }
@@ -123,9 +122,8 @@ public class Helpers {
     }
 
     public String compareStringToAttribute(String option, List<WebElement> elements) {
-        String s = "";
         for (WebElement element : elements) {
-            s = element.getAttribute("ng-class");
+             String s = element.getAttribute("ng-class");
             if (s.toLowerCase().contains(option.toLowerCase()))
                 return s;
         }
