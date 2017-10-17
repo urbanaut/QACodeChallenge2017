@@ -82,7 +82,6 @@ public class Helpers {
         return sheetData;
     }
 
-    //TODO Fix this method to handle foreign text
     public WebElement getElementByInnerHtml(List<WebElement> elements, String option) {
         Map<String, WebElement> buttons = new HashMap<>();
         for (WebElement element : elements) {
@@ -99,16 +98,7 @@ public class Helpers {
         return buttons.get(option);
     }
 
-    public String compareStringToInnerHtml(String option, List<WebElement> elements) {
-        for (WebElement element : elements) {
-            String s = element.getAttribute("innerHTML");
-            if (s.toLowerCase().contains(option.toLowerCase()))
-                return s;
-        }
-        return option;
-    }
-
-    public String compareStringToAttribute(String option, List<WebElement> elements) {
+    public String compareStringToAttribute(List<WebElement> elements, String option) {
         for (WebElement element : elements) {
              String s = element.getAttribute("ng-class");
             if (s.toLowerCase().contains(option.toLowerCase()))
@@ -128,11 +118,5 @@ public class Helpers {
                         "(?<=[^A-Z])(?=[A-Z])",
                         "(?<=[A-Za-z])(?=[^A-Za-z])")
                 , " ");
-    }
-
-    public String chop(String word) {
-        int i = word.indexOf(" ");
-        word = word.substring(0, i);
-        return word;
     }
 }

@@ -1,7 +1,5 @@
 package pages;
 
-import com.sun.jna.platform.FileUtils;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,7 +26,6 @@ public class AssessmentPage {
     }
 
     // Navigation Buttons
-//    @FindBy(xpath = "//a[text()='TAKE ASSESSMENT']")
     @FindBy(xpath = "//a[contains(@href,'you-start')]")
     public WebElement takeAssessmentLnk;
     @FindBy(xpath = "//button[@translate='continue-btn-text']")
@@ -37,6 +34,8 @@ public class AssessmentPage {
     public WebElement previousBtn;
     @FindBy(xpath = "//div[@id='nuskinBespokeApp']//button[@translate='next-btn-text']")
     public WebElement nextBtn;
+    @FindBy(xpath = "//div[@class='pagination']/span")
+    public WebElement progressIndicator;
 
     // Agreement
     @FindBy(xpath = "//div[@id='page-wrap-you']//label")
@@ -69,11 +68,9 @@ public class AssessmentPage {
     // Dial Pages
     @FindBy(xpath = "//canvas")
     public WebElement sliderCtrl;
-    @FindBy(xpath = "//h1[contains(@class,'ng-scope')]")
-    public WebElement sliderPageHeading;
 
     // Skin Type
-    @FindBy(xpath = "//div[@id='skin-type-window']/button")
+    @FindBy(xpath = "//div[@id='skin-type-window']/button[@ng-click='op2()' or @ng-click='op3()' or @ng-click='op4()' or @ng-click='op5()']")
     public List<WebElement> skinTypes;
 
     // Alpha Hydroxy Acids
@@ -137,7 +134,8 @@ public class AssessmentPage {
     public void enterPersonalInfo(String name, String age, String sex) {
         nameTbx.sendKeys(name);
         ageTbx.sendKeys(age);
-        h.getElementByInnerHtml(sexes, sex).click();
+        sex = h.compareStringToAttribute(sexes, sex);
+        h.getElementByAttribute(sexes, sex).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
@@ -158,42 +156,44 @@ public class AssessmentPage {
     }
 
     public void selectSkinType(String skinType) throws Exception {
-        h.waitForElementToBeReady(skinTypes.get(1));
-        h.getElementByInnerHtml(skinTypes, skinType).click();
+        h.waitForElementToBeReady(skinTypes.get(0));
+        skinType = h.compareStringToAttribute(skinTypes, skinType);
+        h.getElementByAttribute(skinTypes, skinType).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
     public void selectAHAExposure(String pollution) throws Exception {
         h.waitForElementToBeReady(ahas.get(0));
-        pollution = h.compareStringToInnerHtml(h.splitCamelCase(pollution), ahas);
-        h.getElementByInnerHtml(ahas, pollution).click();
+        pollution = h.compareStringToAttribute(ahas, pollution);
+        h.getElementByAttribute(ahas, pollution).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
     public void selectSkinFirmness(String firmness) throws Exception {
         h.waitForElementToBeReady(firmnessTypes.get(0));
-        firmness = h.compareStringToAttribute(firmness, firmnessTypes);
+        firmness = h.compareStringToAttribute(firmnessTypes, firmness);
         h.getElementByAttribute(firmnessTypes, firmness).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
     public void selectSkinRadiance(String radiance) throws Exception {
         h.waitForElementToBeReady(radianceTypes.get(0));
-        radiance = h.compareStringToAttribute(radiance, radianceTypes);
+        radiance = h.compareStringToAttribute(radianceTypes, radiance);
         h.getElementByAttribute(radianceTypes, radiance).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
     public void selectSkinTexture(String texture) throws Exception {
         h.waitForElementToBeReady(textures.get(0));
-        texture = h.compareStringToAttribute(texture, textures);
+        texture = h.compareStringToAttribute(textures, texture);
         h.getElementByAttribute(textures, texture).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
     public void selectAddFragrance(String choice) throws Exception {
         h.waitForElementToBeReady(fragranceChoices.get(0));
-        h.getElementByInnerHtml(fragranceChoices, choice).click();
+        choice = h.compareStringToAttribute(fragranceChoices, choice);
+        h.getElementByAttribute(fragranceChoices, choice).click();
         h.scrollToAndClickElement(nextBtn, 75);
     }
 
@@ -201,7 +201,7 @@ public class AssessmentPage {
         FileOutputStream fos = new FileOutputStream("src/main/java/output/summary.txt");
         h.waitForElementToBeReady(findCustomizedRegimenBtn);
         fos.write((assessmentSummaryTxt.getText()+"\n").getBytes());
-        findCustomizedRegimenBtn.click();
+        h.scrollToAndClickElement(findCustomizedRegimenBtn, 50);
         do {
             Thread.sleep(500);
         } while (assessmentCodeTxt.getText().equals(""));
@@ -224,10 +224,10 @@ public class AssessmentPage {
         double distance;
 
         // Determine Slider Type
-        if (sliderPageHeading.getText().equals("Day Moisturizer")) {
+        if (progressIndicator.getText().equals("18/20")) {
             xOffset = 0.50 * width; // Set xOffset at 50% of the width of the canvas image
             distance = percentage * ((width / 2) - (width * 0.2));
-        } else if (sliderPageHeading.getText().equals("Night Moisturizer")) {
+        } else if (progressIndicator.getText().equals("20/20")) {
             // Knob starts at 60% of canvas, distance must be between that
             // and the end of the dial, which is 20% from the edge of the canvas,
             // which distance is canvas length minus 80% of the total length
@@ -258,10 +258,10 @@ public class AssessmentPage {
         try {
             driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
             if (modalOptions.get(0).isDisplayed())
-                if (modalOptions.get(0).getText().equals("No"))
-                    modalOptions.get(1).click();
-                else
+                if (progressIndicator.getText().equals("18/20"))
                     modalOptions.get(0).click();
+                else
+                    modalOptions.get(1).click();
         } catch (Exception e) {
             System.out.println("No modal alert, proceeding to next section.");
         }

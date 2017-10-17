@@ -17,7 +17,7 @@ public class CodeChallenge extends TestBase {
         AssessmentPage ap = new AssessmentPage(driver, mobileTest);
         Helpers h = new Helpers();
         HashMap<String, LinkedHashMap<Integer, List>> excelData = h.loadExcelFile();
-        List data = excelData.get("Sheet1").get(2);
+        List data = excelData.get("Sheet1").get(3);
         Map<String, String> inputData = new HashMap<>();
 
         inputData.put("name", data.get(1).toString());

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class TestBase {
 
     protected static WebDriver driver;
-    protected boolean mobileTest = false;
+    protected boolean mobileTest = true;
 
     @BeforeTest
     public void init() {
