@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
 import java.util.HashMap;
@@ -45,5 +46,10 @@ public class TestBase {
         else
             driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    }
+
+    //@AfterTest
+    public void tearDown() {
+        driver.quit();
     }
 }

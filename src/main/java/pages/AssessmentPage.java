@@ -28,6 +28,8 @@ public class AssessmentPage {
     // Navigation Buttons
     @FindBy(xpath = "//a[contains(@href,'you-start')]")
     public WebElement takeAssessmentLnk;
+    @FindBy(xpath = "//a[contains(@href,'purchase-options')]")
+    public WebElement takeAssessmentLinkUS;
     @FindBy(xpath = "//button[@translate='continue-btn-text']")
     public WebElement continueBtn;
     @FindBy(xpath = "//div[@id='nuskinBespokeApp']//button[@translate='back-btn-text']")
@@ -108,7 +110,10 @@ public class AssessmentPage {
 
     public void navigateToCountryUrl(String url) {
         driver.navigate().to(url);
-        takeAssessmentLnk.click();
+        if (driver.getCurrentUrl().contains("en_US"))
+            takeAssessmentLinkUS.click();
+        else
+            takeAssessmentLnk.click();
     }
 
     public void acceptAgreement() throws Exception {
