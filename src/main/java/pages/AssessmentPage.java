@@ -231,7 +231,7 @@ public class AssessmentPage {
             // Knob starts at 60% of canvas, distance must be between that
             // and the end of the dial, which is 20% from the edge of the canvas,
             // which distance is canvas length minus 80% of the total length
-            xOffset = 0.60 * width; // Set xOffset at 50% of the width of the canvas image
+            xOffset = 0.60 * width; // Set xOffset at 60% of the width of the canvas image
             if (pc > 0)
                 distance = percentage * (width - (width * 0.80));
             else
