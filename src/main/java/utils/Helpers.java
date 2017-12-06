@@ -64,17 +64,16 @@ public class Helpers {
                 while (rows.hasNext()) {
                     HSSFRow row = (HSSFRow) rows.next();
                     Iterator cells = row.cellIterator();
-                    List data = new LinkedList();
+                    List<String> data = new LinkedList();
 
                     while (cells.hasNext()) {
                         HSSFCell cell = (HSSFCell) cells.next();
                         cell.setCellType(Cell.CELL_TYPE_STRING);
-                        data.add(cell);
+                        data.add(cell.toString());
                     }
                     hashMap.put(row.getRowNum(), data);
                 }
                 sheetData.put(sheetName, hashMap);
-                hashMap = new LinkedHashMap<>();
             }
         } catch (IOException e) {
             e.printStackTrace();
