@@ -12,12 +12,14 @@ import java.util.Map;
 
 public class CodeChallenge extends TestBase {
 
+    private static final String OUTPUT = "src/main/java/output/summary.txt";
+
     @Test
     public void testAssessment() throws Exception {
         AssessmentPage ap = new AssessmentPage(driver, mobileTest);
         Helpers h = new Helpers();
         HashMap<String, LinkedHashMap<Integer, List>> excelData = h.loadExcelFile();
-        List<String> data = excelData.get("Sheet1").get(3);
+        List<String> data = excelData.get("Sheet1").get(9);
         Map<String, String> inputData = new HashMap<>();
 
         inputData.put("name", data.get(1));
@@ -54,23 +56,23 @@ public class CodeChallenge extends TestBase {
         ap.slideDial(inputData.get("pollution"));
         ap.slideDial(inputData.get("environment"));
         ap.continueAssessment();
-        ap.selectSkinType(inputData.get("skinType"));
+        ap.selectOption(ap.skinTypes, inputData.get("skinType"), 50);
         ap.slideDial(inputData.get("sensitivity"));
-        ap.selectAHAExposure(inputData.get("aha"));
+        ap.selectOption(ap.ahas, "aha", 50);
         ap.slideDial(inputData.get("ageSpots"));
         ap.slideDial(inputData.get("eyeWrinkles"));
         ap.slideDial(inputData.get("mouthWrinkles"));
         ap.slideDial(inputData.get("foreheadWrinkles"));
         ap.slideDial(inputData.get("pores"));
-        ap.selectSkinFirmness(inputData.get("firmness"));
-        ap.selectSkinRadiance(inputData.get("radiance"));
-        ap.selectSkinTexture(inputData.get("texture"));
+        ap.selectOption(ap.firmnessTypes, inputData.get("firmness"), 50);
+        ap.selectOption(ap.radianceTypes, inputData.get("radiance"), 50);
+        ap.selectOption(ap.textures, inputData.get("texture"), 50);
         ap.continueAssessment();
-        ap.selectAddFragrance(inputData.get("dayFragrance"));
+        ap.selectOption(ap.fragranceChoices, inputData.get("dayFragrance"), 75);
         ap.slideDial(inputData.get("dayMoisturizer"));
-        ap.selectAddFragrance(inputData.get("nightFragrance"));
+        ap.selectOption(ap.fragranceChoices, inputData.get("nightFragrance"), 75);
         ap.slideDial(inputData.get("nightMoisturizer"));
-        ap.getCustomizedRegimen();
+        ap.getCustomizedRegimen(OUTPUT);
     }
 
 }

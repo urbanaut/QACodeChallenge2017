@@ -136,12 +136,10 @@ public class AssessmentPage {
         h.scrollToAndClickElement(continueBtn, 50);
     }
 
-    public void enterPersonalInfo(String name, String age, String sex) {
+    public void enterPersonalInfo(String name, String age, String sex) throws Exception {
         nameTbx.sendKeys(name);
         ageTbx.sendKeys(age);
-        sex = h.compareStringToAttribute(sexes, sex);
-        h.getElementByAttribute(sexes, sex).click();
-        h.scrollToAndClickElement(nextBtn, 50);
+        selectOption(sexes, sex, 50);
     }
 
     public void selectEthnicity(String ethnicity) throws Exception {
@@ -160,50 +158,15 @@ public class AssessmentPage {
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
-    public void selectSkinType(String skinType) throws Exception {
-        h.waitForElementToBeReady(skinTypes.get(0));
-        skinType = h.compareStringToAttribute(skinTypes, skinType);
-        h.getElementByAttribute(skinTypes, skinType).click();
-        h.scrollToAndClickElement(nextBtn, 50);
+    public void selectOption(List<WebElement> elements, String option, int offset) throws Exception {
+        h.waitForElementToBeReady(elements.get(0));
+        option = h.compareStringToAttribute(elements, option);
+        h.getElementByAttribute(elements, option).click();
+        h.scrollToAndClickElement(nextBtn, offset);
     }
 
-    public void selectAHAExposure(String pollution) throws Exception {
-        h.waitForElementToBeReady(ahas.get(0));
-        pollution = h.compareStringToAttribute(ahas, pollution);
-        h.getElementByAttribute(ahas, pollution).click();
-        h.scrollToAndClickElement(nextBtn, 50);
-    }
-
-    public void selectSkinFirmness(String firmness) throws Exception {
-        h.waitForElementToBeReady(firmnessTypes.get(0));
-        firmness = h.compareStringToAttribute(firmnessTypes, firmness);
-        h.getElementByAttribute(firmnessTypes, firmness).click();
-        h.scrollToAndClickElement(nextBtn, 50);
-    }
-
-    public void selectSkinRadiance(String radiance) throws Exception {
-        h.waitForElementToBeReady(radianceTypes.get(0));
-        radiance = h.compareStringToAttribute(radianceTypes, radiance);
-        h.getElementByAttribute(radianceTypes, radiance).click();
-        h.scrollToAndClickElement(nextBtn, 50);
-    }
-
-    public void selectSkinTexture(String texture) throws Exception {
-        h.waitForElementToBeReady(textures.get(0));
-        texture = h.compareStringToAttribute(textures, texture);
-        h.getElementByAttribute(textures, texture).click();
-        h.scrollToAndClickElement(nextBtn, 50);
-    }
-
-    public void selectAddFragrance(String choice) throws Exception {
-        h.waitForElementToBeReady(fragranceChoices.get(0));
-        choice = h.compareStringToAttribute(fragranceChoices, choice);
-        h.getElementByAttribute(fragranceChoices, choice).click();
-        h.scrollToAndClickElement(nextBtn, 75);
-    }
-
-    public void getCustomizedRegimen() throws Exception {
-        FileOutputStream fos = new FileOutputStream("src/main/java/output/summary.txt");
+    public void getCustomizedRegimen(String output) throws Exception {
+        FileOutputStream fos = new FileOutputStream(output);
         h.waitForElementToBeReady(findCustomizedRegimenBtn);
         fos.write((assessmentSummaryTxt.getText()+"\n").getBytes());
         h.scrollToAndClickElement(findCustomizedRegimenBtn, 50);
