@@ -19,13 +19,13 @@ public class Helpers {
 
     private WebDriver driver;
     private boolean mobileTest;
+
+    public Helpers(){}
     
     public Helpers(WebDriver driver, boolean mobileTest) {
         this.driver = driver;
         this.mobileTest = mobileTest;
     }
-
-    public Helpers(){}
 
     public void waitForElementToBeReady(WebElement element) throws Exception {
         do {
@@ -47,10 +47,10 @@ public class Helpers {
         }
     }
 
-    public HashMap loadExcelFile() {
-        HashMap<String, LinkedHashMap<Integer, List>> sheetData = new LinkedHashMap<>();
-        LinkedHashMap<Integer, List> hashMap = new LinkedHashMap<>();
-        File file = new File("src/main/resources/data-provider/assessmentdata.xls");
+    public HashMap loadExcelFile(String dataFile) {
+        HashMap<String, Map<Integer, List>> sheetData = new LinkedHashMap<>();
+        Map<Integer, List> hashMap = new LinkedHashMap<>();
+        File file = new File(dataFile);
         String sheetName;
 
         try(FileInputStream fis = new FileInputStream(file)) {
@@ -64,7 +64,7 @@ public class Helpers {
                 while (rows.hasNext()) {
                     HSSFRow row = (HSSFRow) rows.next();
                     Iterator cells = row.cellIterator();
-                    List<String> data = new LinkedList();
+                    List<String> data = new LinkedList<String>();
 
                     while (cells.hasNext()) {
                         HSSFCell cell = (HSSFCell) cells.next();
@@ -81,12 +81,16 @@ public class Helpers {
         return sheetData;
     }
 
-    public WebElement getElementByInnerHtml(List<WebElement> elements, String option) {
-        Map<String, WebElement> buttons = new HashMap<>();
+    public WebElement getElementByInnerHtml(List<WebElement> elements, String option) throws InterruptedException {
+        if (option.contains(" "))
+            option = option.substring(0, option.indexOf(" "));
+        Thread.sleep(500);
         for (WebElement element : elements) {
-            buttons.put(element.getAttribute("innerHTML"), element);
+            if(element.getAttribute("innerHTML").contains(option)) {
+                return element;
+            }
         }
-        return buttons.get(option);
+        return null;
     }
 
     public WebElement getElementByAttribute(List<WebElement> elements, String option) {
@@ -110,12 +114,4 @@ public class Helpers {
         return StringUtils.capitalize(word);
     }
 
-    public String splitCamelCase(String s) {
-        return s.replaceAll(
-                String.format("%s|%s|%s",
-                        "(?<=[A-Z])(?=[A-Z][a-z])",
-                        "(?<=[^A-Z])(?=[A-Z])",
-                        "(?<=[A-Za-z])(?=[^A-Za-z])")
-                , " ");
-    }
 }

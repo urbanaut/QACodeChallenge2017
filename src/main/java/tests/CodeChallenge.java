@@ -1,25 +1,50 @@
 package tests;
 
 import base.TestBase;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import pages.AssessmentPage;
 import utils.Helpers;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CodeChallenge extends TestBase {
 
-    private static final String OUTPUT = "src/main/java/output/summary.txt";
+    private AssessmentPage ap;
+    private Helpers h;
+    private HashMap<String, Map<Integer, List>> excelData;
+
+    private static final String OUTPUT_FILE = "src/main/java/output/summary.txt";
+    private static final String DATA_FILE = "src/main/resources/data-provider/assessmentdata.xls";
+    private static final String SHEET_NAME = "Sheet1";
+    private static final int ROW_NUMBER = 6;
+
+    @BeforeClass
+    public void setup() {
+        ap = new AssessmentPage(driver, mobileTest);
+        h = new Helpers();
+        excelData = h.loadExcelFile(DATA_FILE);
+    }
 
     @Test
-    public void testAssessment() throws Exception {
-        AssessmentPage ap = new AssessmentPage(driver, mobileTest);
-        Helpers h = new Helpers();
-        HashMap<String, LinkedHashMap<Integer, List>> excelData = h.loadExcelFile();
-        List<String> data = excelData.get("Sheet1").get(9);
+    public void takeSingleAssessment() throws Exception {
+        takeAssessment(ROW_NUMBER);
+    }
+
+    @Test
+    public void takeAllAssessments() throws Exception {
+        int rows = excelData.get(SHEET_NAME).size() - 1;
+        for (int i=1; i<rows; i++) {
+            takeAssessment(i);
+        }
+    }
+
+
+    private void takeAssessment(int rowNumber) throws Exception {
+        List<String> data = excelData.get(SHEET_NAME).get(rowNumber);
         Map<String, String> inputData = new HashMap<>();
 
         inputData.put("name", data.get(1));
@@ -72,7 +97,12 @@ public class CodeChallenge extends TestBase {
         ap.slideDial(inputData.get("dayMoisturizer"));
         ap.selectOption(ap.fragranceChoices, inputData.get("nightFragrance"), 75);
         ap.slideDial(inputData.get("nightMoisturizer"));
-        ap.getCustomizedRegimen(OUTPUT);
+        ap.getCustomizedRegimen(OUTPUT_FILE);
+    }
+
+    @AfterClass
+    public void tearDown() {
+        driver.close();
     }
 
 }
