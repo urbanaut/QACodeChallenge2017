@@ -84,7 +84,7 @@ public class Helpers {
     public WebElement getElementByInnerHtml(List<WebElement> elements, String option) throws InterruptedException {
         if (option.contains(" "))
             option = option.substring(0, option.indexOf(" "));
-        Thread.sleep(500);
+        Thread.sleep(1000);
         for (WebElement element : elements) {
             if(element.getAttribute("innerHTML").contains(option)) {
                 return element;
@@ -108,10 +108,6 @@ public class Helpers {
                 return s;
         }
         return option;
-    }
-
-    public String capitalize(String word) {
-        return StringUtils.capitalize(word);
     }
 
 }

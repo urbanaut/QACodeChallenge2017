@@ -14,7 +14,6 @@ import java.util.Map;
 public class CodeChallenge extends TestBase {
 
     private AssessmentPage ap;
-    private Helpers h;
     private HashMap<String, Map<Integer, List>> excelData;
 
     private static final String OUTPUT_FILE = "src/main/java/output/summary.txt";
@@ -25,7 +24,7 @@ public class CodeChallenge extends TestBase {
     @BeforeClass
     public void setup() {
         ap = new AssessmentPage(driver, mobileTest);
-        h = new Helpers();
+        Helpers h = new Helpers();
         excelData = h.loadExcelFile(DATA_FILE);
     }
 
@@ -50,13 +49,13 @@ public class CodeChallenge extends TestBase {
         inputData.put("name", data.get(1));
         inputData.put("countryURL", data.get(2));
         inputData.put("age", data.get(4));
-        inputData.put("sex", h.capitalize(data.get(5)));
+        inputData.put("sex", data.get(5));
         inputData.put("ethnicity", data.get(6));
-        inputData.put("location", h.capitalize(data.get(7)) + ", " + data.get(3));
+        inputData.put("location", data.get(7) + ", " + data.get(3));
         inputData.put("pollution", data.get(8));
         inputData.put("environment", data.get(9));
-        inputData.put("skinType", h.capitalize(data.get(10)));
-        inputData.put("sensitivity", h.capitalize(data.get(11)));
+        inputData.put("skinType", data.get(10));
+        inputData.put("sensitivity", data.get(11));
         inputData.put("aha", data.get(12));
         inputData.put("ageSpots", data.get(13));
         inputData.put("eyeWrinkles", data.get(14));
@@ -66,9 +65,9 @@ public class CodeChallenge extends TestBase {
         inputData.put("firmness", data.get(18));
         inputData.put("radiance", data.get(19));
         inputData.put("texture", data.get(20));
-        inputData.put("dayFragrance", h.capitalize(data.get(21)));
+        inputData.put("dayFragrance", data.get(21));
         inputData.put("dayMoisturizer", data.get(22));
-        inputData.put("nightFragrance", h.capitalize(data.get(23)));
+        inputData.put("nightFragrance", data.get(23));
         inputData.put("nightMoisturizer", data.get(24));
 
         // Execute Assessment Test
