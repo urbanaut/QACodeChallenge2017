@@ -19,14 +19,13 @@ public class TestBase {
     protected static WebDriver driver;
     protected boolean mobileTest = true;
 
-    public static String SUMMARY_FILE="";
-    public static String RESULTS_FILE="";
     public static String DATA_FILE="";
+    private static String DRIVER_PATH="";
+    public static String RESULTS_FILE="";
+    public static String SUMMARY_FILE="";
     public static String SHEET_NAME="";
     private static String DEVICE_NAME="";
-    protected static int ROW_NUMBER;
 
-    private static final String DRIVER_PATH = "src\\main\\resources\\drivers\\chromedriver.exe";
     private static final String PROPERTIES_FILE = "src\\main\\resources\\test.properties";
 
     @BeforeSuite
@@ -36,10 +35,10 @@ public class TestBase {
         props.load(input);
 
         DATA_FILE = props.getProperty("DATA_FILE");
+        DRIVER_PATH = props.getProperty("DRIVER_PATH");
         RESULTS_FILE = props.getProperty("RESULTS_FILE");
         SUMMARY_FILE = props.getProperty("SUMMARY_FILE");
         SHEET_NAME = props.getProperty("SHEET_NAME");
-        ROW_NUMBER = Integer.valueOf(props.getProperty("ROW_NUMBER"));
         DEVICE_NAME = props.getProperty("DEVICE_NAME");
     }
 

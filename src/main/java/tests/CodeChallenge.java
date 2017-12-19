@@ -26,7 +26,7 @@ public class CodeChallenge extends TestBase {
 
     @Test
     public void takeSingleAssessment() throws Exception {
-        ap.takeAssessment(ROW_NUMBER);
+        ap.takeAssessment(3);
     }
 
     @Test
