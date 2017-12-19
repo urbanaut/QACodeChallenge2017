@@ -14,8 +14,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
-import static tests.CodeChallenge.DATA_FILE;
-import static tests.CodeChallenge.SHEET_NAME;
+import static base.TestBase.DATA_FILE;
+import static base.TestBase.SHEET_NAME;
 
 public class Helpers {
 

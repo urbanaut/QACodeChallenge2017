@@ -11,13 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static tests.CodeChallenge.*;
+import static base.TestBase.*;
 
 public class AssessmentPage {
 
     private WebDriver driver;
-    private boolean mobileTest;
     private Helpers h;
+    private boolean mobileTest;
 
     public AssessmentPage(WebDriver driver, boolean mobileTest) {
         PageFactory.initElements(driver, this);

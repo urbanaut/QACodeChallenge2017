@@ -1,4 +1,0 @@
-OUTPUT_FILE=src/main/java/output/summary.txt
-DATA_FILE=src/main/resources/data-provider/assessmentdata.xls
-SHEET_NAME=Sheet1
-ROW_NUMBER=6

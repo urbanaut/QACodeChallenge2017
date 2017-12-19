@@ -10,16 +10,12 @@ import utils.Helpers;
 public class CodeChallenge extends TestBase {
 
     private AssessmentPage ap;
-
-    public static final String SUMMARY_FILE = "src/main/java/output/summary.txt";
-    public static final String RESULTS_FILE = "src/main/java/output/results.txt";
-    public static final String DATA_FILE = "src/main/resources/data-provider/assessmentdata.xls";
-    public static final String SHEET_NAME = "Sheet1";
-    private static final int ROW_NUMBER = 2;
+    private Helpers h;
 
     @BeforeClass
     public void setup() {
         ap = new AssessmentPage(driver, mobileTest);
+        h = new Helpers();
     }
 
     @AfterClass
@@ -35,7 +31,6 @@ public class CodeChallenge extends TestBase {
 
     @Test
     public void takeAllAssessments() throws Exception {
-        Helpers h = new Helpers();
         int rows = h.getSpreadsheetRows();
         for (int i=1; i<rows; i++) {
             ap.takeAssessment(i);
