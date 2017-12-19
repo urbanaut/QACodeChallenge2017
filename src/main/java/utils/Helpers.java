@@ -1,6 +1,5 @@
 package utils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -103,11 +102,11 @@ public class Helpers {
 
     public String compareStringToAttribute(List<WebElement> elements, String option) {
         for (WebElement element : elements) {
-             String s = element.getAttribute("ng-class");
-            if (s.toLowerCase().contains(option.toLowerCase()))
-                return s;
+            String attribute = element.getAttribute("ng-class");
+            if (attribute.toLowerCase().contains(option.toLowerCase()))
+                return attribute;
         }
-        return option;
+        return null;
     }
 
 }

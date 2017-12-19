@@ -8,18 +8,20 @@ import pages.AssessmentPage;
 import utils.Helpers;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CodeChallenge extends TestBase {
 
     private AssessmentPage ap;
-    private HashMap<String, Map<Integer, List>> excelData;
 
-    private static final String OUTPUT_FILE = "src/main/java/output/summary.txt";
+    private HashMap<String, Map<Integer, List>> excelData;
+    private static final String SUMMARY_FILE = "src/main/java/output/summary.txt";
+    private static final String RESULTS_FILE = "src/main/java/output/results.txt";
     private static final String DATA_FILE = "src/main/resources/data-provider/assessmentdata.xls";
     private static final String SHEET_NAME = "Sheet1";
-    private static final int ROW_NUMBER = 6;
+    private static final int ROW_NUMBER = 2;
 
     @BeforeClass
     public void setup() {
@@ -44,7 +46,7 @@ public class CodeChallenge extends TestBase {
 
     private void takeAssessment(int rowNumber) throws Exception {
         List<String> data = excelData.get(SHEET_NAME).get(rowNumber);
-        Map<String, String> inputData = new HashMap<>();
+        Map<String, String> inputData = new LinkedHashMap<>();
 
         inputData.put("name", data.get(1));
         inputData.put("countryURL", data.get(2));
@@ -69,6 +71,7 @@ public class CodeChallenge extends TestBase {
         inputData.put("dayMoisturizer", data.get(22));
         inputData.put("nightFragrance", data.get(23));
         inputData.put("nightMoisturizer", data.get(24));
+        inputData.put("assessmentCode", data.get(25));
 
         // Execute Assessment Test
         ap.navigateToCountryUrl(inputData.get("countryURL"));
@@ -96,10 +99,11 @@ public class CodeChallenge extends TestBase {
         ap.slideDial(inputData.get("dayMoisturizer"));
         ap.selectOption(ap.fragranceChoices, inputData.get("nightFragrance"), 75);
         ap.slideDial(inputData.get("nightMoisturizer"));
-        ap.getCustomizedRegimen(OUTPUT_FILE);
+        ap.getCustomizedRegimen(SUMMARY_FILE);
+        ap.verifyAssessmentCode(inputData.get("assessmentCode"), RESULTS_FILE, rowNumber);
     }
 
-    @AfterClass
+    //@AfterClass
     public void tearDown() {
         driver.close();
     }

@@ -1,14 +1,13 @@
 package pages;
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import utils.Helpers;
 
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -67,9 +66,11 @@ public class AssessmentPage {
     @FindBy(xpath = "//div[@class='input-wrap top-spacer']//i[@class='clear-input']")
     public WebElement clearLocationBtn;
 
-    // Dial Pages
+    // Dial
     @FindBy(xpath = "//canvas")
-    public WebElement sliderCtrl;
+    public WebElement slider;
+    @FindBy(xpath = "//input[@class='knob']")
+    public WebElement knob;
 
     // Skin Type
     @FindBy(xpath = "//div[@id='skin-type-window']/button[@ng-click='op2()' or @ng-click='op3()' or @ng-click='op4()' or @ng-click='op5()']")
@@ -177,61 +178,117 @@ public class AssessmentPage {
         fos.close();
     }
 
-    public void slideDial(String percent) throws Exception {
+    public void verifyAssessmentCode(String code, String resultsFile, int rowNumber) throws Exception {
+        FileOutputStream fos = new FileOutputStream(resultsFile, true);
+        String timestamp = new SimpleDateFormat("dd-MM-yyyy, HH:mm:ss").format(new Date());
+        if (!code.equals(assessmentCodeTxt.getText())) {
+            String line = "\n\nFailed Tests, " + timestamp + "\n" +
+                    "Row: " + String.valueOf(rowNumber) +
+                    ", Expected Code: " + code +
+                    ", Actual Code: " + assessmentCodeTxt.getText();
+            fos.write(line.getBytes());
+            fos.close();
+        }
+    }
+
+    public void slideDial(String percentage) throws Exception {
+        h.waitForElementToBeReady(slider);
+
+        double startingValue = Double.valueOf(knob.getAttribute("value"));
+        int width = slider.getSize().getWidth();
+        int height = slider.getSize().getHeight();
+        double yOffset = height * 0.80;   // Set yOffset at 80% of the height of the canvas image
+        double xOffset = width * (20 + (0.6 * startingValue))/100;
+        int increment = 1;
+
+        if (percentage.equals("")) {
+            percentage = "0";
+        }
+
         Actions actions = new Actions(driver);
-        h.waitForElementToBeReady(sliderCtrl);
-
-        if (percent.equals(""))
-            percent = "25";
-        int pc = Integer.valueOf(percent);
-        double percentage = pc / 100.0;
-        int width = sliderCtrl.getSize().getWidth();
-        int height = sliderCtrl.getSize().getHeight();
-        double yOffset = 0.80 * (height);   // Set yOffset at 80% of the height of the canvas image
-        double xOffset;
-        double distance;
-
-        // Determine Slider Type
-        if (progressIndicator.getText().equals("18/20")) {
-            xOffset = 0.50 * width; // Set xOffset at 50% of the width of the canvas image
-            distance = percentage * ((width / 2) - (width * 0.2));
-        } else if (progressIndicator.getText().equals("20/20")) {
-            // Knob starts at 60% of canvas, distance must be between that
-            // and the end of the dial, which is 20% from the edge of the canvas,
-            // which distance is canvas length minus 80% of the total length
-            xOffset = 0.60 * width; // Set xOffset at 60% of the width of the canvas image
-            if (pc > 0)
-                distance = percentage * (width - (width * 0.80));
-            else
-                distance = percentage * ((width / 2)  - (width * 0.10));
-        } else {
-            xOffset = 0.20 * width; // Set xOffset at 20% of the width of the canvas image
-            distance = percentage * (width - (2 * xOffset));
+        if (Integer.valueOf(percentage) > 0) {
+            actions.moveToElement(slider, (int) xOffset, (int) yOffset).clickAndHold().perform();
+            while (!knob.getAttribute("value").equals(percentage)) {
+                actions.moveByOffset(increment, 0).perform();
+                if (Integer.valueOf(percentage) < Integer.valueOf(knob.getAttribute("value"))) {
+                    increment = -1;
+                }
+            }
+            actions.release().perform();
         }
 
-        // Handle Mobile Test
-        if (!mobileTest) {
-            actions.moveToElement(sliderCtrl, (int) xOffset, (int) yOffset)
-                    .clickAndHold()
-                    .moveByOffset((int) distance, 0)
-                    .release()
-                    .perform();
-        } else {
-            xOffset = xOffset + distance;
-            actions.moveToElement(sliderCtrl, (int) xOffset, (int) yOffset).click().perform();
-        }
         h.scrollToAndClickElement(nextBtn, 50);
 
-        // Handle Modal Alerts
-        try {
-            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-            if (modalOptions.get(0).isDisplayed())
+        // Handle modal options
+        if (modalOptions.get(0).isDisplayed()) {
+            try {
+                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
                 if (progressIndicator.getText().equals("18/20"))
                     modalOptions.get(0).click();
                 else
                     modalOptions.get(1).click();
-        } catch (Exception e) {
-            System.out.println("No modal alert, proceeding to next section.");
+            } catch (Exception e) {
+                System.out.println("ERROR: Failed to select modal option.");
+                e.printStackTrace();
+            }
         }
     }
+
+//    public void slideDial(String percent) throws Exception {
+//        Actions actions = new Actions(driver);
+//        h.waitForElementToBeReady(slider);
+//
+//        if (percent.equals(""))
+//            percent = "25";
+//        int pc = Integer.valueOf(percent);
+//        double percentage = pc / 100.0;
+//        int width = slider.getSize().getWidth();
+//        int height = slider.getSize().getHeight();
+//        double yOffset = 0.80 * (height);   // Set yOffset at 80% of the height of the canvas image
+//        double xOffset;
+//        double distance;
+//
+//        // Determine Slider Type
+//        if (progressIndicator.getText().equals("18/20")) {
+//            xOffset = 0.50 * width; // Set xOffset at 50% of the width of the canvas image
+//            distance = percentage * ((width / 2) - (width * 0.2));
+//        } else if (progressIndicator.getText().equals("20/20")) {
+//            // Knob starts at 60% of canvas, distance must be between that
+//            // and the end of the dial, which is 20% from the edge of the canvas,
+//            // which distance is canvas length minus 80% of the total length
+//            xOffset = 0.60 * width; // Set xOffset at 60% of the width of the canvas image
+//            if (pc > 0)
+//                distance = percentage * (width - (width * 0.80));
+//            else
+//                distance = percentage * ((width / 2)  - (width * 0.10));
+//        } else {
+//            xOffset = 0.20 * width; // Set xOffset at 20% of the width of the canvas image
+//            distance = percentage * (width - (2 * xOffset));
+//        }
+//
+//        // Handle Mobile Test
+//        if (!mobileTest) {
+//            actions.moveToElement(slider, (int) xOffset, (int) yOffset)
+//                    .clickAndHold()
+//                    .moveByOffset((int) distance, 0)
+//                    .release()
+//                    .perform();
+//        } else {
+//            xOffset = xOffset + distance;
+//            actions.moveToElement(slider, (int) xOffset, (int) yOffset).click().perform();
+//        }
+//        h.scrollToAndClickElement(nextBtn, 50);
+//
+//        // Handle Modal Alerts
+//        try {
+//            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+//            if (modalOptions.get(0).isDisplayed())
+//                if (progressIndicator.getText().equals("18/20"))
+//                    modalOptions.get(0).click();
+//                else
+//                    modalOptions.get(1).click();
+//        } catch (Exception e) {
+//            System.out.println("No modal alert, proceeding to next section.");
+//        }
+//    }
 }
