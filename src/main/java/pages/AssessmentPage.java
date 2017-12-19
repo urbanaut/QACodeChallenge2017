@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static tests.CodeChallenge.*;
+
 public class AssessmentPage {
 
     private WebDriver driver;
@@ -109,7 +111,7 @@ public class AssessmentPage {
     public WebElement assessmentCodeTxt;
 
 
-    public void navigateToCountryUrl(String url) {
+    private void navigateToCountryUrl(String url) {
         driver.navigate().to(url);
         if (driver.getCurrentUrl().contains("en_US"))
             takeAssessmentLinkUS.click();
@@ -117,7 +119,7 @@ public class AssessmentPage {
             takeAssessmentLnk.click();
     }
 
-    public void acceptAgreement() throws Exception {
+    private void acceptAgreement() throws Exception {
         h.waitForElementToBeReady(agreementContinueBtn);
         if (mobileTest) {
             try {
@@ -132,24 +134,24 @@ public class AssessmentPage {
         h.scrollToAndClickElement(agreementContinueBtn, 50);
     }
 
-    public void continueAssessment() throws Exception {
+    private void continueAssessment() throws Exception {
         h.waitForElementToBeReady(continueBtn);
         h.scrollToAndClickElement(continueBtn, 50);
     }
 
-    public void enterPersonalInfo(String name, String age, String sex) throws Exception {
+    private void enterPersonalInfo(String name, String age, String sex) throws Exception {
         nameTbx.sendKeys(name);
         ageTbx.sendKeys(age);
         selectOption(sexes, sex, 50);
     }
 
-    public void selectEthnicity(String ethnicity) throws Exception {
+    private void selectEthnicity(String ethnicity) throws Exception {
         h.waitForElementToBeReady(ethnicities.get(0));
         h.getElementByInnerHtml(ethnicities, ethnicity).click();
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
-    public void enterLocation(String location) throws Exception {
+    private void enterLocation(String location) throws Exception {
         Actions actions = new Actions(driver);
         h.waitForElementToBeReady(map);
         clearLocationBtn.click();
@@ -159,14 +161,14 @@ public class AssessmentPage {
         h.scrollToAndClickElement(nextBtn, 50);
     }
 
-    public void selectOption(List<WebElement> elements, String option, int offset) throws Exception {
+    private void selectOption(List<WebElement> elements, String option, int offset) throws Exception {
         h.waitForElementToBeReady(elements.get(0));
         option = h.compareStringToAttribute(elements, option);
         h.getElementByAttribute(elements, option).click();
         h.scrollToAndClickElement(nextBtn, offset);
     }
 
-    public void getCustomizedRegimen(String output) throws Exception {
+    private void getCustomizedRegimen(String output) throws Exception {
         FileOutputStream fos = new FileOutputStream(output);
         h.waitForElementToBeReady(findCustomizedRegimenBtn);
         fos.write((assessmentSummaryTxt.getText()+"\n").getBytes());
@@ -178,7 +180,7 @@ public class AssessmentPage {
         fos.close();
     }
 
-    public void verifyAssessmentCode(String code, String resultsFile, int rowNumber) throws Exception {
+    private void verifyAssessmentCode(String code, String resultsFile, int rowNumber) throws Exception {
         FileOutputStream fos = new FileOutputStream(resultsFile, true);
         String timestamp = new SimpleDateFormat("dd-MM-yyyy, HH:mm:ss").format(new Date());
         if (!code.equals(assessmentCodeTxt.getText())) {
@@ -191,21 +193,21 @@ public class AssessmentPage {
         }
     }
 
-    public void slideDial(String percentage) throws Exception {
+    private void slideDial(String percentage) throws Exception {
         h.waitForElementToBeReady(slider);
 
-        double startingValue = Double.valueOf(knob.getAttribute("value"));
         int width = slider.getSize().getWidth();
         int height = slider.getSize().getHeight();
+        double startingValue = Double.valueOf(knob.getAttribute("value"));
         double yOffset = height * 0.80;   // Set yOffset at 80% of the height of the canvas image
         double xOffset = width * (20 + (0.6 * startingValue))/100;
-        int increment = 1;
 
         if (percentage.equals("")) {
             percentage = "0";
         }
 
         Actions actions = new Actions(driver);
+        int increment = 1;
         if (Integer.valueOf(percentage) > 0) {
             actions.moveToElement(slider, (int) xOffset, (int) yOffset).clickAndHold().perform();
             while (!knob.getAttribute("value").equals(percentage)) {
@@ -219,7 +221,7 @@ public class AssessmentPage {
 
         h.scrollToAndClickElement(nextBtn, 50);
 
-        // Handle modal options
+        // Handle modal popup
         if (modalOptions.get(0).isDisplayed()) {
             try {
                 driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
@@ -234,61 +236,64 @@ public class AssessmentPage {
         }
     }
 
-//    public void slideDial(String percent) throws Exception {
-//        Actions actions = new Actions(driver);
-//        h.waitForElementToBeReady(slider);
-//
-//        if (percent.equals(""))
-//            percent = "25";
-//        int pc = Integer.valueOf(percent);
-//        double percentage = pc / 100.0;
-//        int width = slider.getSize().getWidth();
-//        int height = slider.getSize().getHeight();
-//        double yOffset = 0.80 * (height);   // Set yOffset at 80% of the height of the canvas image
-//        double xOffset;
-//        double distance;
-//
-//        // Determine Slider Type
-//        if (progressIndicator.getText().equals("18/20")) {
-//            xOffset = 0.50 * width; // Set xOffset at 50% of the width of the canvas image
-//            distance = percentage * ((width / 2) - (width * 0.2));
-//        } else if (progressIndicator.getText().equals("20/20")) {
-//            // Knob starts at 60% of canvas, distance must be between that
-//            // and the end of the dial, which is 20% from the edge of the canvas,
-//            // which distance is canvas length minus 80% of the total length
-//            xOffset = 0.60 * width; // Set xOffset at 60% of the width of the canvas image
-//            if (pc > 0)
-//                distance = percentage * (width - (width * 0.80));
-//            else
-//                distance = percentage * ((width / 2)  - (width * 0.10));
-//        } else {
-//            xOffset = 0.20 * width; // Set xOffset at 20% of the width of the canvas image
-//            distance = percentage * (width - (2 * xOffset));
-//        }
-//
-//        // Handle Mobile Test
-//        if (!mobileTest) {
-//            actions.moveToElement(slider, (int) xOffset, (int) yOffset)
-//                    .clickAndHold()
-//                    .moveByOffset((int) distance, 0)
-//                    .release()
-//                    .perform();
-//        } else {
-//            xOffset = xOffset + distance;
-//            actions.moveToElement(slider, (int) xOffset, (int) yOffset).click().perform();
-//        }
-//        h.scrollToAndClickElement(nextBtn, 50);
-//
-//        // Handle Modal Alerts
-//        try {
-//            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-//            if (modalOptions.get(0).isDisplayed())
-//                if (progressIndicator.getText().equals("18/20"))
-//                    modalOptions.get(0).click();
-//                else
-//                    modalOptions.get(1).click();
-//        } catch (Exception e) {
-//            System.out.println("No modal alert, proceeding to next section.");
-//        }
-//    }
+    public void takeAssessment(int rowNumber) throws Exception {
+        HashMap<String, Map<Integer, List<String>>> excelData = h.loadExcelFile(DATA_FILE);
+        List<String> data = excelData.get(SHEET_NAME).get(rowNumber);
+        Map<String, String> inputData = new LinkedHashMap<>();
+
+        inputData.put("name", data.get(1));
+        inputData.put("countryURL", data.get(2));
+        inputData.put("age", data.get(4));
+        inputData.put("sex", data.get(5));
+        inputData.put("ethnicity", data.get(6));
+        inputData.put("location", data.get(7) + ", " + data.get(3));
+        inputData.put("pollution", data.get(8));
+        inputData.put("environment", data.get(9));
+        inputData.put("skinType", data.get(10));
+        inputData.put("sensitivity", data.get(11));
+        inputData.put("aha", data.get(12));
+        inputData.put("ageSpots", data.get(13));
+        inputData.put("eyeWrinkles", data.get(14));
+        inputData.put("mouthWrinkles", data.get(15));
+        inputData.put("foreheadWrinkles", data.get(16));
+        inputData.put("pores", data.get(17));
+        inputData.put("firmness", data.get(18));
+        inputData.put("radiance", data.get(19));
+        inputData.put("texture", data.get(20));
+        inputData.put("dayFragrance", data.get(21));
+        inputData.put("dayMoisturizer", data.get(22));
+        inputData.put("nightFragrance", data.get(23));
+        inputData.put("nightMoisturizer", data.get(24));
+        inputData.put("assessmentCode", data.get(25));
+
+        // Execute Assessment Test
+        navigateToCountryUrl(inputData.get("countryURL"));
+        acceptAgreement();
+        continueAssessment();
+        enterPersonalInfo(inputData.get("name"), inputData.get("age"), inputData.get("sex"));
+        selectEthnicity(inputData.get("ethnicity"));
+        enterLocation(inputData.get("location"));
+        slideDial(inputData.get("pollution"));
+        slideDial(inputData.get("environment"));
+        continueAssessment();
+        selectOption(skinTypes, inputData.get("skinType"), 50);
+        slideDial(inputData.get("sensitivity"));
+        selectOption(ahas, "aha", 50);
+        slideDial(inputData.get("ageSpots"));
+        slideDial(inputData.get("eyeWrinkles"));
+        slideDial(inputData.get("mouthWrinkles"));
+        slideDial(inputData.get("foreheadWrinkles"));
+        slideDial(inputData.get("pores"));
+        selectOption(firmnessTypes, inputData.get("firmness"), 50);
+        selectOption(radianceTypes, inputData.get("radiance"), 50);
+        selectOption(textures, inputData.get("texture"), 50);
+        continueAssessment();
+        selectOption(fragranceChoices, inputData.get("dayFragrance"), 75);
+        slideDial(inputData.get("dayMoisturizer"));
+        selectOption(fragranceChoices, inputData.get("nightFragrance"), 75);
+        slideDial(inputData.get("nightMoisturizer"));
+        getCustomizedRegimen(SUMMARY_FILE);
+        verifyAssessmentCode(inputData.get("assessmentCode"), RESULTS_FILE, rowNumber);
+    }
+
 }

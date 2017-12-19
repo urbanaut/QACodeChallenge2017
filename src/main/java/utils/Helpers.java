@@ -14,17 +14,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
+import static tests.CodeChallenge.DATA_FILE;
+import static tests.CodeChallenge.SHEET_NAME;
+
 public class Helpers {
 
     private WebDriver driver;
     private boolean mobileTest;
-
-    public Helpers(){}
     
     public Helpers(WebDriver driver, boolean mobileTest) {
         this.driver = driver;
         this.mobileTest = mobileTest;
     }
+
+    public Helpers(){}
 
     public void waitForElementToBeReady(WebElement element) throws Exception {
         do {
@@ -46,9 +49,9 @@ public class Helpers {
         }
     }
 
-    public HashMap loadExcelFile(String dataFile) {
-        HashMap<String, Map<Integer, List>> sheetData = new LinkedHashMap<>();
-        Map<Integer, List> hashMap = new LinkedHashMap<>();
+    public HashMap<String, Map<Integer, List<String>>> loadExcelFile(String dataFile) {
+        HashMap<String, Map<Integer, List<String>>> sheetData = new LinkedHashMap<>();
+        Map<Integer, List<String>> rowData = new LinkedHashMap<>();
         File file = new File(dataFile);
         String sheetName;
 
@@ -63,21 +66,26 @@ public class Helpers {
                 while (rows.hasNext()) {
                     HSSFRow row = (HSSFRow) rows.next();
                     Iterator cells = row.cellIterator();
-                    List<String> data = new LinkedList<String>();
+                    List<String> cellData = new LinkedList<String>();
 
                     while (cells.hasNext()) {
                         HSSFCell cell = (HSSFCell) cells.next();
                         cell.setCellType(Cell.CELL_TYPE_STRING);
-                        data.add(cell.toString());
+                        cellData.add(cell.toString());
                     }
-                    hashMap.put(row.getRowNum(), data);
+                    rowData.put(row.getRowNum(), cellData);
                 }
-                sheetData.put(sheetName, hashMap);
+                sheetData.put(sheetName, rowData);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return sheetData;
+    }
+
+    public int getSpreadsheetRows() {
+        HashMap<String, Map<Integer, List<String>>> excelData = loadExcelFile(DATA_FILE);
+        return excelData.get(SHEET_NAME).size() - 1;
     }
 
     public WebElement getElementByInnerHtml(List<WebElement> elements, String option) throws InterruptedException {
