@@ -12,6 +12,7 @@ import org.openqa.selenium.WebElement;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import static base.TestBase.DATA_FILE;
@@ -20,18 +21,18 @@ import static base.TestBase.SHEET_NAME;
 public class Helpers {
 
     private WebDriver driver;
-    private boolean mobileTest;
+    private boolean isMobileTest;
     
-    public Helpers(WebDriver driver, boolean mobileTest) {
+    public Helpers(WebDriver driver, boolean isMobileTest) {
         this.driver = driver;
-        this.mobileTest = mobileTest;
+        this.isMobileTest = isMobileTest;
     }
 
     public Helpers(){}
 
     public void waitForElementToBeReady(WebElement element) throws Exception {
         do {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         }while (!element.isDisplayed());
     }
 
@@ -41,7 +42,7 @@ public class Helpers {
             jse.executeScript("window.scrollTo(0," + element.getLocation().getY() + ")");
             jse.executeScript("window.scrollBy(0,-" + offset + ")");
             element.click();
-            if (mobileTest)
+            if (isMobileTest)
                 jse.executeScript("window.scrollTo(0,0)");
         } catch (Exception e) {
             System.out.println("Unable to locate element.");
@@ -49,13 +50,13 @@ public class Helpers {
         }
     }
 
-    public HashMap<String, Map<Integer, List<String>>> loadExcelFile(String dataFile) {
-        HashMap<String, Map<Integer, List<String>>> sheetData = new LinkedHashMap<>();
+    public Map<String, Map<Integer, List<String>>> loadExcelFile(String dataFile) {
+        Map<String, Map<Integer, List<String>>> sheetData = new LinkedHashMap<>();
         Map<Integer, List<String>> rowData = new LinkedHashMap<>();
         File file = new File(dataFile);
         String sheetName;
 
-        try(FileInputStream fis = new FileInputStream(file)) {
+        try(InputStream fis = new FileInputStream(file)) {
             HSSFWorkbook workBook = new HSSFWorkbook(fis);
 
             for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
@@ -84,7 +85,7 @@ public class Helpers {
     }
 
     public int getSpreadsheetRows() {
-        HashMap<String, Map<Integer, List<String>>> excelData = loadExcelFile(DATA_FILE);
+        Map<String, Map<Integer, List<String>>> excelData = loadExcelFile(DATA_FILE);
         return excelData.get(SHEET_NAME).size() - 1;
     }
 

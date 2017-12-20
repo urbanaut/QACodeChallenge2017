@@ -7,6 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 import utils.Helpers;
 
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -17,13 +18,13 @@ public class AssessmentPage {
 
     private WebDriver driver;
     private Helpers h;
-    private boolean mobileTest;
+    private boolean isMobileTest;
 
-    public AssessmentPage(WebDriver driver, boolean mobileTest) {
+    public AssessmentPage(WebDriver driver, boolean isMobileTest) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
-        this.mobileTest = mobileTest;
-        h = new Helpers(driver, mobileTest);
+        this.isMobileTest = isMobileTest;
+        h = new Helpers(driver, isMobileTest);
     }
 
     // Navigation Buttons
@@ -70,7 +71,7 @@ public class AssessmentPage {
 
     // Dial
     @FindBy(xpath = "//canvas")
-    public WebElement slider;
+    public WebElement dial;
     @FindBy(xpath = "//input[@class='knob']")
     public WebElement knob;
 
@@ -121,7 +122,7 @@ public class AssessmentPage {
 
     private void acceptAgreement() throws Exception {
         h.waitForElementToBeReady(agreementContinueBtn);
-        if (mobileTest) {
+        if (isMobileTest) {
             try {
                 driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
                 if (cookieBtn.isDisplayed())
@@ -169,7 +170,7 @@ public class AssessmentPage {
     }
 
     private void getCustomizedRegimen(String output) throws Exception {
-        FileOutputStream fos = new FileOutputStream(output);
+        OutputStream fos = new FileOutputStream(output);
         h.waitForElementToBeReady(findCustomizedRegimenBtn);
         fos.write((assessmentSummaryTxt.getText()+"\n").getBytes());
         h.scrollToAndClickElement(findCustomizedRegimenBtn, 50);
@@ -181,10 +182,10 @@ public class AssessmentPage {
     }
 
     private void verifyAssessmentCode(String code, String resultsFile, int rowNumber) throws Exception {
-        FileOutputStream fos = new FileOutputStream(resultsFile, true);
-        String timestamp = new SimpleDateFormat("dd-MM-yyyy, HH:mm:ss").format(new Date());
+        OutputStream fos = new FileOutputStream(resultsFile, true);
+        String timestamp = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Date());
         if (!code.equals(assessmentCodeTxt.getText())) {
-            String line = "\n\nFailed Tests, " + timestamp + "\n" +
+            String line = "\n\nFailed Test, " + timestamp + "\n" +
                     "Row: " + String.valueOf(rowNumber) +
                     ", Expected Code: " + code +
                     ", Actual Code: " + assessmentCodeTxt.getText();
@@ -194,10 +195,10 @@ public class AssessmentPage {
     }
 
     private void slideDial(String percentage) throws Exception {
-        h.waitForElementToBeReady(slider);
+        h.waitForElementToBeReady(dial);
 
-        int width = slider.getSize().getWidth();
-        int height = slider.getSize().getHeight();
+        int width = dial.getSize().getWidth();
+        int height = dial.getSize().getHeight();
         double startingValue = Double.valueOf(knob.getAttribute("value"));
         double yOffset = height * 0.80;   // Set yOffset at 80% of the height of the canvas image
         double xOffset = width * (20 + (0.6 * startingValue))/100;
@@ -209,7 +210,7 @@ public class AssessmentPage {
         Actions actions = new Actions(driver);
         int increment = 1;
         if (Integer.valueOf(percentage) > 0) {
-            actions.moveToElement(slider, (int) xOffset, (int) yOffset).clickAndHold().perform();
+            actions.moveToElement(dial, (int) xOffset, (int) yOffset).clickAndHold().perform();
             while (!knob.getAttribute("value").equals(percentage)) {
                 actions.moveByOffset(increment, 0).perform();
                 if (Integer.valueOf(percentage) < Integer.valueOf(knob.getAttribute("value"))) {
@@ -237,7 +238,7 @@ public class AssessmentPage {
     }
 
     public void takeAssessment(int rowNumber) throws Exception {
-        HashMap<String, Map<Integer, List<String>>> excelData = h.loadExcelFile(DATA_FILE);
+        Map<String, Map<Integer, List<String>>> excelData = h.loadExcelFile(DATA_FILE);
         List<String> data = excelData.get(SHEET_NAME).get(rowNumber);
         Map<String, String> inputData = new LinkedHashMap<>();
 

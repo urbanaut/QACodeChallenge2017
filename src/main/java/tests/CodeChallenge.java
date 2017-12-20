@@ -14,7 +14,6 @@ public class CodeChallenge extends TestBase {
 
     @BeforeClass
     public void setup() {
-        ap = new AssessmentPage(driver, mobileTest);
         h = new Helpers();
     }
 
@@ -23,14 +22,34 @@ public class CodeChallenge extends TestBase {
         driver.close();
     }
 
-
     @Test
-    public void takeSingleAssessment() throws Exception {
+    public void takeSingleAssessmentStandard() throws Exception {
+        setIsMobileTest(false);
+        ap = new AssessmentPage(driver, false);
         ap.takeAssessment(3);
     }
 
     @Test
-    public void takeAllAssessments() throws Exception {
+    public void takeSingleAssessmentMobile() throws Exception {
+        setIsMobileTest(true);
+        ap = new AssessmentPage(driver, true);
+        ap.takeAssessment(3);
+    }
+
+    @Test
+    public void takeAllAssessmentsStandard() throws Exception {
+        setIsMobileTest(false);
+        ap = new AssessmentPage(driver, false);
+        int rows = h.getSpreadsheetRows();
+        for (int i=1; i<rows; i++) {
+            ap.takeAssessment(i);
+        }
+    }
+
+    @Test
+    public void takeAllAssessmentsMobile() throws Exception {
+        setIsMobileTest(true);
+        ap = new AssessmentPage(driver, true);
         int rows = h.getSpreadsheetRows();
         for (int i=1; i<rows; i++) {
             ap.takeAssessment(i);

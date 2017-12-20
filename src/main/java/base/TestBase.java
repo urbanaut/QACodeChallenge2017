@@ -6,6 +6,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
+import sun.util.logging.PlatformLogger;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -13,19 +14,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TestBase {
 
     protected static WebDriver driver;
-    protected boolean mobileTest = true;
 
     public static String DATA_FILE="";
-    private static String DRIVER_PATH="";
+    private static String WEBDRIVER_PATH ="";
     public static String RESULTS_FILE="";
     public static String SUMMARY_FILE="";
     public static String SHEET_NAME="";
     private static String DEVICE_NAME="";
-
     private static final String PROPERTIES_FILE = "src\\main\\resources\\test.properties";
 
     @BeforeSuite
@@ -35,7 +36,7 @@ public class TestBase {
         props.load(input);
 
         DATA_FILE = props.getProperty("DATA_FILE");
-        DRIVER_PATH = props.getProperty("DRIVER_PATH");
+        WEBDRIVER_PATH = props.getProperty("WEBDRIVER_PATH");
         RESULTS_FILE = props.getProperty("RESULTS_FILE");
         SUMMARY_FILE = props.getProperty("SUMMARY_FILE");
         SHEET_NAME = props.getProperty("SHEET_NAME");
@@ -44,9 +45,13 @@ public class TestBase {
 
     @BeforeTest
     public void init() {
-        System.setProperty("webdriver.chrome.driver", DRIVER_PATH);
+        Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
+    }
 
-        if (mobileTest) {
+    protected void setIsMobileTest(boolean isMobileTest) {
+        System.setProperty("webdriver.chrome.driver", WEBDRIVER_PATH);
+
+        if (isMobileTest) {
             Map<String, String> devices =  new HashMap<>();
             devices.put("deviceName", DEVICE_NAME);
             Map<String, Object> mobileEmulation = new HashMap<>();
@@ -55,8 +60,7 @@ public class TestBase {
             DesiredCapabilities capabilities = DesiredCapabilities.chrome();
             capabilities.setCapability(ChromeOptions.CAPABILITY, mobileEmulation);
             driver = new ChromeDriver(capabilities);
-        }
-        else {
+        }else {
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("credentials_enable_service", false);
             prefs.put("profile.password_manager_enabled", false);
