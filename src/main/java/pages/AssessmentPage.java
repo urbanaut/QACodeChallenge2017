@@ -112,7 +112,7 @@ public class AssessmentPage {
     public WebElement assessmentCodeTxt;
 
 
-    private void navigateToCountryUrl(String url) {
+    private void navigateToUrl(String url) {
         driver.navigate().to(url);
         if (driver.getCurrentUrl().contains("en_US"))
             takeAssessmentLinkUS.click();
@@ -203,9 +203,8 @@ public class AssessmentPage {
         double yOffset = height * 0.80;   // Set yOffset at 80% of the height of the canvas image
         double xOffset = width * (20 + (0.6 * startingValue))/100;
 
-        if (percentage.equals("")) {
+        if (percentage.equals(""))
             percentage = "0";
-        }
 
         Actions actions = new Actions(driver);
         int increment = 1;
@@ -222,18 +221,20 @@ public class AssessmentPage {
 
         h.scrollToAndClickElement(nextBtn, 50);
 
-        // Handle modal popup
-        if (modalOptions.get(0).isDisplayed()) {
-            try {
-                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-                if (progressIndicator.getText().equals("18/20"))
-                    modalOptions.get(0).click();
-                else
-                    modalOptions.get(1).click();
-            } catch (Exception e) {
-                System.out.println("ERROR: Failed to select modal option.");
-                e.printStackTrace();
-            }
+        if (modalOptions.get(0).isDisplayed())
+            handleModalPopup();
+    }
+
+    private void handleModalPopup() {
+        try {
+            driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+            if (progressIndicator.getText().equals("18/20"))
+                modalOptions.get(0).click();
+            else
+                modalOptions.get(1).click();
+        } catch (Exception e) {
+            System.out.println("ERROR: Failed to select modal option.");
+            e.printStackTrace();
         }
     }
 
@@ -268,7 +269,7 @@ public class AssessmentPage {
         inputData.put("assessmentCode", data.get(25));
 
         // Execute Assessment Test
-        navigateToCountryUrl(inputData.get("countryURL"));
+        navigateToUrl(inputData.get("countryURL"));
         acceptAgreement();
         continueAssessment();
         enterPersonalInfo(inputData.get("name"), inputData.get("age"), inputData.get("sex"));

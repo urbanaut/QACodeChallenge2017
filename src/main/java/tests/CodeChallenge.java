@@ -33,7 +33,7 @@ public class CodeChallenge extends TestBase {
     public void takeSingleAssessmentMobile() throws Exception {
         setIsMobileTest(true);
         ap = new AssessmentPage(driver, true);
-        ap.takeAssessment(3);
+        ap.takeAssessment(1);
     }
 
     @Test
