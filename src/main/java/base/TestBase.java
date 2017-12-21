@@ -6,7 +6,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
-import sun.util.logging.PlatformLogger;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
