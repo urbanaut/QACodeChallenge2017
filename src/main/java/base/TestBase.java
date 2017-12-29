@@ -20,12 +20,12 @@ public class TestBase {
 
     protected static WebDriver driver;
 
-    public static String DATA_FILE="";
-    private static String WEBDRIVER_PATH ="";
-    public static String RESULTS_FILE="";
-    public static String SUMMARY_FILE="";
-    public static String SHEET_NAME="";
-    private static String DEVICE_NAME="";
+    public static String DATA_FILE;
+    private static String WEBDRIVER_PATH;
+    public static String RESULTS_FILE;
+    public static String SUMMARY_FILE;
+    public static String SHEET_NAME;
+    private static String DEVICE_NAME;
     private static final String PROPERTIES_FILE = "src\\main\\resources\\test.properties";
 
     @BeforeSuite

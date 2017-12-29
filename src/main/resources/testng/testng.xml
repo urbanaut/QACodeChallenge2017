@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Registration" verbose="1">
+    <test name="QA Code Challenge 2017" parallel="tests">
+        <classes>
+            <class name="tests.CodeChallenge"/>
+        </classes>
+    </test>
+</suite>
