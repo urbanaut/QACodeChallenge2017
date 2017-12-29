@@ -36,7 +36,7 @@ public class CodeChallenge extends TestBase {
         ap.takeAssessment(1);
     }
 
-//    @Test
+    @Test
     public void takeAllAssessmentsStandard() throws Exception {
         setIsMobileTest(false);
         ap = new AssessmentPage(driver, false);
@@ -46,7 +46,7 @@ public class CodeChallenge extends TestBase {
         }
     }
 
-    @Test
+//    @Test
     public void takeAllAssessmentsMobile() throws Exception {
         setIsMobileTest(true);
         ap = new AssessmentPage(driver, true);
