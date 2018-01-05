@@ -69,7 +69,7 @@ public class AssessmentPage {
     @FindBy(xpath = "//div[@class='input-wrap top-spacer']//i[@class='clear-input']")
     public WebElement clearLocationBtn;
 
-    // Dial
+//    // Dial
     @FindBy(xpath = "//canvas")
     public WebElement dial;
     @FindBy(xpath = "//input[@class='knob']")

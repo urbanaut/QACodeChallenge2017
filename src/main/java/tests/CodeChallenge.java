@@ -22,7 +22,7 @@ public class CodeChallenge extends TestBase {
         driver.close();
     }
 
-//    @Test
+    @Test
     public void takeSingleAssessmentStandard() throws Exception {
         setIsMobileTest(false);
         ap = new AssessmentPage(driver, false);
